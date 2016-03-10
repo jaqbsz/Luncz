@@ -58,9 +58,7 @@ extern "C" {
 # define SQLITE_STDCALL
 #endif
 
-
-
-//#define SQLITE_ENABLE_COLUMN_METADAT
+#define SQLITE_ENABLE_COLUMN_METADAT
 
 /*
 ** These no-op macros are used in front of interfaces to mark those
