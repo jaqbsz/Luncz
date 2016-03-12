@@ -12,10 +12,8 @@
 
 #include "Exception.h"
 
-
 namespace SQLite
 {
-
 
 // Forward declaration
 class Database;
@@ -42,7 +40,7 @@ class Database;
  */
 class Transaction
 {
-public:
+  public:
     /**
      * @brief Begins the SQLite transaction
      *
@@ -62,16 +60,15 @@ public:
      */
     void commit();
 
-private:
+  private:
     // Transaction must be non-copyable
     Transaction(const Transaction&);
     Transaction& operator=(const Transaction&);
     /// @}
 
-private:
-    Database&   mDatabase;  //!< Reference to the SQLite Database Connection
-    bool        mbCommited; //!< True when commit has been called
+  private:
+    Database& mDatabase;  //!< Reference to the SQLite Database Connection
+    bool mbCommited; //!< True when commit has been called
 };
-
 
 }  // namespace SQLite

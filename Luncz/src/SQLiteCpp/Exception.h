@@ -13,17 +13,15 @@
 #include <stdexcept>
 #include <string>
 
-
 namespace SQLite
 {
-
 
 /**
  * @brief Encapsulation of the error message from SQLite3, based on std::runtime_error.
  */
-class Exception : public std::runtime_error
+class Exception: public std::runtime_error
 {
-public:
+  public:
     /**
      * @brief Encapsulation of the error message from SQLite3, based on std::runtime_error.
      *
@@ -35,13 +33,11 @@ public:
     }
 };
 
-
 }  // namespace SQLite
-
 
 /// Compatibility with non-clang compilers.
 #ifndef __has_feature
-    #define __has_feature(x) 0
+#define __has_feature(x) 0
 #endif
 
 // Detect whether the compiler supports C++11 noexcept exception specifications.
@@ -53,6 +49,6 @@ public:
 #elif defined(_MSC_VER) && _MSC_VER > 1800
 // Visual Studio 2015 and above have noexcept
 #else
-    // Visual Studio 2013 does not support noexcept, and "throw()" is deprecated by C++11
-    #define noexcept
+// Visual Studio 2013 does not support noexcept, and "throw()" is deprecated by C++11
+#define noexcept
 #endif

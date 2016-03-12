@@ -16,7 +16,6 @@
  */
 #pragma once
 
-
 // Include useful headers of SQLiteC++
 #include "Assertion.h"
 #include "Exception.h"
@@ -24,7 +23,6 @@
 #include "Statement.h"
 #include "Column.h"
 #include "Transaction.h"
-
 
 /**
  * @brief Version numbers for SQLiteC++ are provided in the same way as sqlite3.h

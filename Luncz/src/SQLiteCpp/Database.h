@@ -16,10 +16,8 @@
 
 #include <string>
 
-
 namespace SQLite
 {
-
 
 /**
  * @brief RAII management of a SQLite Database Connection.
@@ -42,7 +40,7 @@ class Database
 {
     friend class Statement; // Give Statement constructor access to the mpSQLite Connection Handle
 
-public:
+  public:
     /**
      * @brief Open the provided database UTF-8 filename.
      *
@@ -60,10 +58,8 @@ public:
      *
      * @throw SQLite::Exception in case of error
      */
-    Database(const char* apFilename,
-             const int   aFlags         = SQLITE_OPEN_READONLY,
-             const int   aBusyTimeoutMs = 0,
-             const char* apVfs          = NULL);
+    Database(const char* apFilename, const int aFlags = SQLITE_OPEN_READONLY,
+        const int aBusyTimeoutMs = 0, const char* apVfs = NULL);
 
     /**
      * @brief Open the provided database UTF-8 filename.
@@ -82,10 +78,9 @@ public:
      *
      * @throw SQLite::Exception in case of error
      */
-    Database(const std::string& aFilename,
-             const int          aFlags          = SQLITE_OPEN_READONLY,
-             const int          aBusyTimeoutMs  = 0,
-             const std::string& aVfs            = "");
+    Database(const std::string& aFilename, const int aFlags =
+        SQLITE_OPEN_READONLY, const int aBusyTimeoutMs = 0,
+        const std::string& aVfs = "");
 
     /**
      * @brief Close the SQLite database connection.
@@ -152,7 +147,7 @@ public:
      */
     inline int exec(const std::string& aQueries)
     {
-        return exec(aQueries.c_str());
+      return exec(aQueries.c_str());
     }
 
     /**
@@ -197,7 +192,7 @@ public:
      */
     inline Column execAndGet(const std::string& aQuery)
     {
-        return execAndGet(aQuery.c_str());
+      return execAndGet(aQuery.c_str());
     }
 
     /**
@@ -226,7 +221,7 @@ public:
      */
     inline bool tableExists(const std::string& aTableName)
     {
-        return tableExists(aTableName.c_str());
+      return tableExists(aTableName.c_str());
     }
 
     /**
@@ -239,7 +234,7 @@ public:
      */
     inline sqlite3_int64 getLastInsertRowid() const noexcept // nothrow
     {
-        return sqlite3_last_insert_rowid(mpSQLite);
+      return sqlite3_last_insert_rowid(mpSQLite);
     }
 
     /**
@@ -249,41 +244,41 @@ public:
      */
     inline int getTotalChanges() const noexcept // nothrow
     {
-        return sqlite3_total_changes(mpSQLite);
+      return sqlite3_total_changes(mpSQLite);
     }
 
     /// @brief Return the filename used to open the database.
     inline const std::string& getFilename() const noexcept // nothrow
     {
-        return mFilename;
+      return mFilename;
     }
 
     /// @brief Return the numeric result code for the most recent failed API call (if any).
     inline int getErrorCode() const noexcept // nothrow
     {
-        return sqlite3_errcode(mpSQLite);
+      return sqlite3_errcode(mpSQLite);
     }
 
     /// @brief Return the extended numeric result code for the most recent failed API call (if any).
     inline int getExtendedErrorCode() const noexcept // nothrow
     {
-        return sqlite3_extended_errcode(mpSQLite);
+      return sqlite3_extended_errcode(mpSQLite);
     }
 
     /// @brief Return UTF-8 encoded English language explanation of the most recent failed API call (if any).
     inline const char* errmsg() const noexcept // nothrow
     {
-        return sqlite3_errmsg(mpSQLite);
+      return sqlite3_errmsg(mpSQLite);
     }
 
     /**
      * @brief Return raw pointer to SQLite Database Connection Handle.
      *
      * This is often needed to mix this wrapper with other libraries or for advance usage not supported by SQLiteCpp.
-    */
+     */
     inline sqlite3* getHandle() const noexcept // nothrow
     {
-        return mpSQLite;
+      return mpSQLite;
     }
 
     /**
@@ -305,14 +300,12 @@ public:
      *
      * @throw SQLite::Exception in case of error
      */
-    void createFunction(const char* apFuncName,
-                        int         aNbArg,
-                        bool        abDeterministic,
-                        void*       apApp,
-                        void      (*apFunc)(sqlite3_context *, int, sqlite3_value **),
-                        void      (*apStep)(sqlite3_context *, int, sqlite3_value **),
-                        void      (*apFinal)(sqlite3_context *),  // NOLINT(readability/casting)
-                        void      (*apDestroy)(void *));
+    void createFunction(const char* apFuncName, int aNbArg,
+        bool abDeterministic, void* apApp,
+        void (*apFunc)(sqlite3_context *, int, sqlite3_value **),
+        void (*apStep)(sqlite3_context *, int, sqlite3_value **),
+        void (*apFinal)(sqlite3_context *),  // NOLINT(readability/casting)
+        void (*apDestroy)(void *));
 
     /**
      * @brief Create or redefine a SQL function or aggregate in the sqlite database. 
@@ -333,19 +326,16 @@ public:
      *
      * @throw SQLite::Exception in case of error
      */
-    inline void createFunction(const std::string&   aFuncName,
-                               int                  aNbArg,
-                               bool                 abDeterministic,
-                               void*                apApp,
-                               void               (*apFunc)(sqlite3_context *, int, sqlite3_value **),
-                               void               (*apStep)(sqlite3_context *, int, sqlite3_value **),
-                               void               (*apFinal)(sqlite3_context *), // NOLINT(readability/casting)
-                               void               (*apDestroy)(void *))
+    inline void createFunction(const std::string& aFuncName, int aNbArg,
+        bool abDeterministic, void* apApp,
+        void (*apFunc)(sqlite3_context *, int, sqlite3_value **),
+        void (*apStep)(sqlite3_context *, int, sqlite3_value **),
+        void (*apFinal)(sqlite3_context *), // NOLINT(readability/casting)
+        void (*apDestroy)(void *))
     {
-        return createFunction(aFuncName.c_str(), aNbArg, abDeterministic,
-                              apApp, apFunc, apStep, apFinal, apDestroy);
+      return createFunction(aFuncName.c_str(), aNbArg, abDeterministic, apApp,
+          apFunc, apStep, apFinal, apDestroy);
     }
-
 
     /**
      * @brief Load a module into the current sqlite database instance. 
@@ -363,9 +353,9 @@ public:
      * @throw SQLite::Exception in case of error
      */
     void loadExtension(const char* apExtensionName,
-         const char *apEntryPointName);
+        const char *apEntryPointName);
 
-private:
+  private:
     /// @{ Database must be non-copyable
     Database(const Database&);
     Database& operator=(const Database&);
@@ -376,16 +366,15 @@ private:
      */
     inline void check(const int aRet) const
     {
-        if (SQLITE_OK != aRet)
-        {
-            throw SQLite::Exception(sqlite3_errstr(aRet));
-        }
+      if (SQLITE_OK != aRet)
+      {
+        throw SQLite::Exception(sqlite3_errstr(aRet));
+      }
     }
 
-private:
-    sqlite3*    mpSQLite;   //!< Pointer to SQLite Database Connection Handle
+  private:
+    sqlite3* mpSQLite;   //!< Pointer to SQLite Database Connection Handle
     std::string mFilename;  //!< UTF-8 filename used to open the database
 };
-
 
 }  // namespace SQLite

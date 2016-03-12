@@ -38,7 +38,7 @@ namespace SQLite
  */
 class Backup
 {
-public:
+  public:
     /**
      * @brief Initialize a SQLite Backup object.
      *
@@ -55,10 +55,8 @@ public:
      *
      * @throw SQLite::Exception in case of error
      */
-    Backup(Database&   aDestDatabase,
-           const char* apDestDatabaseName,
-           Database&   aSrcDatabase,
-           const char* apSrcDatabaseName);
+    Backup(Database& aDestDatabase, const char* apDestDatabaseName,
+        Database& aSrcDatabase, const char* apSrcDatabaseName);
 
     /**
      * @brief Initialize a SQLite Backup object.
@@ -76,10 +74,8 @@ public:
      *
      * @throw SQLite::Exception in case of error
      */
-    Backup(Database&          aDestDatabase,
-           const std::string& aDestDatabaseName,
-           Database&          aSrcDatabase,
-           const std::string& aSrcDatabaseName);
+    Backup(Database& aDestDatabase, const std::string& aDestDatabaseName,
+        Database& aSrcDatabase, const std::string& aSrcDatabaseName);
 
     /**
      * @brief Initialize a SQLite Backup object for main databases.
@@ -94,8 +90,7 @@ public:
      *
      * @throw SQLite::Exception in case of error
      */
-    Backup(Database& aDestDatabase,
-           Database& aSrcDatabase);
+    Backup(Database& aDestDatabase, Database& aSrcDatabase);
 
     /**
      * @brief Release the SQLite Backup resource.
@@ -131,14 +126,14 @@ public:
      */
     int totalPageCount();
 
-private:
+  private:
     /// @{ Backup must be non-copyable
     Backup(const Backup&);
     Backup& operator=(const Backup&);
     /// @}
 
-private:
-    sqlite3_backup* mpSQLiteBackup;   //!< Pointer to SQLite Database Backup Handle
+  private:
+    sqlite3_backup* mpSQLiteBackup; //!< Pointer to SQLite Database Backup Handle
 };
 
 }  // namespace SQLite

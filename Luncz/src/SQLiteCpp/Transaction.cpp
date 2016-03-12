@@ -13,50 +13,45 @@
 #include "Database.h"
 #include "Assertion.h"
 
-
 namespace SQLite
 {
 
-
 // Begins the SQLite transaction
 Transaction::Transaction(Database& aDatabase) :
-    mDatabase(aDatabase),
-    mbCommited(false)
+    mDatabase(aDatabase), mbCommited(false)
 {
-    mDatabase.exec("BEGIN");
+  mDatabase.exec("BEGIN");
 }
 
 // Safely rollback the transaction if it has not been committed.
 Transaction::~Transaction() noexcept // nothrow
 {
-    if (false == mbCommited)
+  if (false == mbCommited)
+  {
+    try
     {
-        try
-        {
-            mDatabase.exec("ROLLBACK");
-        }
-        catch (SQLite::Exception& e)
-        {
-            // Never throw an exception in a destructor
-            (void)e; // warning proof
-            SQLITECPP_ASSERT(false, e.what());  // See SQLITECPP_ENABLE_ASSERT_HANDLER
-        }
+      mDatabase.exec("ROLLBACK");
+    } catch (SQLite::Exception& e)
+    {
+      // Never throw an exception in a destructor
+      (void) e; // warning proof
+      SQLITECPP_ASSERT(false, e.what());  // See SQLITECPP_ENABLE_ASSERT_HANDLER
     }
+  }
 }
 
 // Commit the transaction.
 void Transaction::commit()
 {
-    if (false == mbCommited)
-    {
-        mDatabase.exec("COMMIT");
-        mbCommited = true;
-    }
-    else
-    {
-        throw SQLite::Exception("Transaction already commited.");
-    }
+  if (false == mbCommited)
+  {
+    mDatabase.exec("COMMIT");
+    mbCommited = true;
+  }
+  else
+  {
+    throw SQLite::Exception("Transaction already commited.");
+  }
 }
-
 
 }  // namespace SQLite
