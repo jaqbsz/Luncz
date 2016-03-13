@@ -10,87 +10,97 @@
 #include <iostream>
 #include <typeinfo>
 
-UserList::UserList(User ** u_l, int max_usr) : max_users(max_usr), u_list(u_l)
+UserList::UserList(SQLite::Database& Db_link, int max_usr) :
+    Db_link(Db_link),
+    max_users(max_usr),
+    table_name("USERS_LIST")
 {
-  ;
+  //TODO recalculate user IDs
+
+  try
+  {
+    // Test if the 'USERS_LIST' table exists
+    if ( !this->Db_link.tableExists(table_name) )
+    {
+      // Begin transaction
+      SQLite::Transaction transaction(this->Db_link);
+
+      // Compile a SQL query
+      this->Db_link.exec("CREATE TABLE USERS_LIST    \
+                    (id        INTEGER   NOT NULL, \
+                     f_name    TEXT  NOT NULL, \
+                     l_name    TEXT  NOT NULL, \
+                     initials  TEXT  NOT NULL, \
+                     PRIMARY   KEY(ID))");
+
+      // Commit transaction
+      transaction.commit();
+    }
+  }catch(exception& e)
+  {
+    throw e.what();
+  }
 }
 
 UserList::~UserList()
 {
-  // TODO Auto-generated destructor stub
+  ;
 }
 
-int UserList::AddUser(string f_n, string l_n, bool zam)
+int UserList::AddUser(string f_n, string l_n, string initials)
 {
-  int ret_id = 0;
+  //TODO add initials.toUpperCase();
+  //TODO check against too much users
+  //TODO return real user ID.
+  //TODO catch exception
+  //TODO check if user already exists
 
-  User * u = NULL;
+  int newUsr_id = 0;
 
-  if ( zam )
+  try
   {
-    u = new Zamawiacz(f_n, l_n);
+    // Compile a SQL query
+    SQLite::Statement insert(this->Db_link, "INSERT INTO USERS_LIST (f_name, l_name, initials) VALUES(:f_n, :l_n, :initials)");
+
+    // Bind parameters of the SQL query
+    insert.bind(":initials", initials);
+    insert.bind(":f_n", f_n);
+    insert.bind(":l_n", l_n);
+
+    // Begin transaction
+    SQLite::Transaction transaction(this->Db_link);
+
+    // execute earlier prepared query
+    insert.exec();
+
+    // Commit transaction
+    transaction.commit();
   }
-  else
+  catch ( exception& )
   {
-    u = new User(f_n, l_n);
+
   }
 
-  int ucnt = u->GetUserCnt();
-
-  if (ucnt < max_users)
-  {
-    for (int i = 0; i < max_users ; i++)
-    {
-      if ( u_list[i] == NULL )
-      {
-        u_list[i] = u;
-        ret_id = u->GetId();
-        break;
-      }
-    }
-  }
-  else
-  {
-    delete u;
-  }
-
-  return ret_id;
-}
-
-void UserList::ListUsers()
-{
-  cout<<"\nID: \t First name: \t Last name: \t Type:"<<endl;
-  for(int i = 0; i < max_users ; i++)
-  {
-    if ( u_list[i] )
-    {
-      User * u = u_list[i];
-      cout<<u->GetId();
-      cout<<"\t ";
-      cout<<u->GetFName();
-      cout<<"\t\t ";
-      cout<<u->GetLName();
-      cout<<"\t\t";
-      cout<<u->GetType();
-      cout<<endl;
-    }
-  }
-  cout<<"User count: "<<User::GetUserCnt()<<endl;
+  return newUsr_id;
 }
 
 bool UserList::DeleteUser(int id)
 {
   bool ret = false;
 
-  for(int i = 0; i < max_users ; i++)
+  try
   {
-    if ( u_list[i] && (u_list[i]->GetId() == id) )
-    {
-      delete u_list[i];
-      u_list[i] = NULL;
-      ret = true;
-      break;
-    }
+    // Compile a SQL query
+    SQLite::Statement select(this->Db_link, "DELETE FROM USERS_LIST WHERE id = :id");
+
+    // Bind parameters of the SQL query
+    select.bind(":id", id);
+
+    ret = (bool) select.executeStep();
+  }
+  catch ( exception& )
+  {
+    //TODO catch exception
   }
 
   return ret;
@@ -100,34 +110,5 @@ User * UserList::GetUser(int id)
 {
   User * u = NULL;
 
-  for(int i = 0; i < max_users ; i++)
-  {
-    if (u_list[i] && u_list[i]->GetId() == id)
-    {
-      u = u_list[i];
-      break;
-    }
-  }
-
-  if (u == NULL)
-  {
-    throw id;
-  }
-
   return u;
-}
-
-int UserList::GetZamawiaczId()
-{
-  int ret = 0;
-
-  for(int i = 0; i < max_users ; i++)
-  {
-    if ( u_list[i] && u_list[i]->GetType().compare("Zamawiacz") == 0)
-    {
-      ret = u_list[i]->GetId();
-    }
-  }
-
-  return ret;
 }

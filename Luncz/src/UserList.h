@@ -9,23 +9,34 @@
 #define USERLIST_H_
 
 using namespace std;
-#include <list>
+#include "SQLite\sqlite3.h"
+#include "SQLiteCpp\SQLiteCpp.h"
 #include "User.h"
 
 class UserList
 {
   private:
-    const int max_users;
-    User **u_list;
+    SQLite::Database& Db_link;    ///< Database connection
+    const int max_users;          ///< Max number of users
+    const char *table_name;
 
   public:
-    UserList(User ** u_l, int max_usr);
+    UserList(SQLite::Database& Db_link, int max_usr);
     ~UserList();
 
-    int AddUser(string f_n, string l_n, bool zam = false);
+    /**
+     * @brief Adds new user to the user list
+     */
+    int AddUser(string f_n, string l_n, string initials);
+
+    /**
+     * @brief Returns pointer to User object with data retrieved from the user list table
+     */
     User * GetUser(int id);
-    int GetZamawiaczId();
-    void ListUsers();
+
+    /**
+     * @brief Deletes user with provided id number
+     */
     bool DeleteUser(int id);
 };
 

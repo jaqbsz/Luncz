@@ -26,22 +26,13 @@ int main(int argc, char **argv)
     SQLite::Database db(database_file, SQLITE_OPEN_READWRITE|SQLITE_OPEN_CREATE);
     std::cout << "SQLite database file '" << db.getFilename().c_str()<< "' opened successfully\n";
 
-    // Begin transaction
-    SQLite::Transaction transaction(db);
+    UserList u_list = UserList(db, USER_CNT);
 
-    // create test table
-    db.exec("CREATE TABLE test (id        INT       NOT NULL, \
-                                initials  CHAR(5)   NOT NULL, \
-                                f_name    CHAR(20)  NOT NULL, \
-                                l_name    CHAR(20)  NOT NULL, \
-                                PRIMARY   KEY(ID))");
+    u_list.AddUser("Janek", "Kos", "jk");
+    u_list.AddUser("John", "McClain", "jmc");
 
-    // Commit transaction
-    transaction.commit();
+    u_list.DeleteUser(1);
 
-    // Test if the 'test' table exists
-    const bool bExists = db.tableExists("test");
-    std::cout << "SQLite table 'test' exists=" << bExists << "\n";
   } catch (exception& e)
   {
     cout << "!!Exception: " << e.what() << std::endl;
