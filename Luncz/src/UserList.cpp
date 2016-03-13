@@ -16,6 +16,7 @@ UserList::UserList(SQLite::Database& Db_link, int max_usr) :
     table_name("USERS_LIST")
 {
   //TODO recalculate user IDs
+  //TODO catch exception
 
   try
   {
@@ -27,10 +28,10 @@ UserList::UserList(SQLite::Database& Db_link, int max_usr) :
 
       // Compile a SQL query
       this->Db_link.exec("CREATE TABLE USERS_LIST    \
-                    (id        INTEGER   NOT NULL, \
-                     f_name    TEXT  NOT NULL, \
-                     l_name    TEXT  NOT NULL, \
-                     initials  TEXT  NOT NULL, \
+                    (id        INTEGER NOT NULL, \
+                     f_name    TEXT NOT NULL, \
+                     l_name    TEXT NOT NULL, \
+                     initials  TEXT NOT NULL, \
                      PRIMARY   KEY(ID))");
 
       // Commit transaction
@@ -38,7 +39,7 @@ UserList::UserList(SQLite::Database& Db_link, int max_usr) :
     }
   }catch(exception& e)
   {
-    throw e.what();
+
   }
 }
 
@@ -47,7 +48,7 @@ UserList::~UserList()
   ;
 }
 
-int UserList::AddUser(string f_n, string l_n, string initials)
+User* UserList::AddUser(string f_n, string l_n, string initials)
 {
   //TODO add initials.toUpperCase();
   //TODO check against too much users
@@ -76,16 +77,18 @@ int UserList::AddUser(string f_n, string l_n, string initials)
     // Commit transaction
     transaction.commit();
   }
-  catch ( exception& )
+  catch (exception& e)
   {
 
   }
 
-  return newUsr_id;
+  return GetUser(newUsr_id);
 }
 
 bool UserList::DeleteUser(int id)
 {
+  //TODO catch exception
+
   bool ret = false;
 
   try
@@ -98,9 +101,9 @@ bool UserList::DeleteUser(int id)
 
     ret = (bool) select.executeStep();
   }
-  catch ( exception& )
+  catch (exception& e)
   {
-    //TODO catch exception
+
   }
 
   return ret;

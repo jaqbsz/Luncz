@@ -7,22 +7,24 @@
 
 #include "User.h"
 
-int User::usercnt = 0;
-
 User::User(string f_n, string l_n)
 {
-  this->usercnt++;
-  this->id = this->usercnt;
-  this->f_name = f_n;
-  this->l_name = l_n;
 
-  //check if this user already exists
-  // if yes throw exception
+}
+
+User::User(string initials)
+{
+
+}
+
+User::User(int id)
+{
+
 }
 
 User::~User()
 {
-  this->usercnt--;
+
 }
 
 int User::GetId()
@@ -45,12 +47,31 @@ string User::GetLName()
   return this->l_name;
 }
 
-string User::GetType()
+usrtype User::GetType()
 {
-  return "Normal user";
+  return this->type;
 }
 
-int User::GetUserCnt()
+void User::AddOrder(int menu_item, int cost)
 {
-  return usercnt;
+
+}
+void User::AddOrder(int menu_item, int cost, User & user)
+{
+
+}
+
+void User::DeleteOrder()
+{
+
+}
+
+void User::DeleteOrder(User & user)
+{
+
+}
+
+void User::MakeOrder()
+{
+
 }
