@@ -26,15 +26,14 @@ int main(int argc, char **argv)
     SQLite::Database db(database_file, SQLITE_OPEN_READWRITE|SQLITE_OPEN_CREATE);
     std::cout << "SQLite database file '" << db.getFilename().c_str()<< "' opened successfully\n";
 
+    db.exec("DROP TABLE IF EXISTS USERS_LIST");
+
     UserList u_list = UserList(db, USER_CNT);
 
-    u_list.AddUser("Janek", "Kos", "jk");
-    u_list.AddUser("John", "McClain", "jmc");
+    User jk = User(db, u_list.AddUser("Janek", "Kos", "jk"));
+    cout<<"User:"<<jk.GetFName()<<" "<<jk.GetLName()<<endl;
 
-    u_list.DeleteUser(1);
-
-    User jmc = User(db, "jmc");
-
+    User jmc = User(db, u_list.AddUser("John", "McClain", "jmc"));
     cout<<"User:"<<jmc.GetFName()<<" "<<jmc.GetLName()<<endl;
 
   } catch (exception& e)

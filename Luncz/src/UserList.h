@@ -27,12 +27,7 @@ class UserList
     /**
      * @brief Adds new user to the user list
      */
-    User * AddUser(string f_n, string l_n, string initials);
-
-    /**
-     * @brief Returns pointer to User object with data retrieved from the user list table
-     */
-    User * GetUser(int id);
+    int AddUser(string f_n, string l_n, string initials);
 
     /**
      * @brief Deletes user with provided id number
