@@ -11,7 +11,7 @@
 #include <typeinfo>
 
 UserList::UserList(SQLite::Database& Db_link, int max_usr) :
-    Db_link(Db_link),
+    db(Db_link),
     max_users(max_usr),
     table_name("USERS_LIST")
 {
@@ -21,13 +21,13 @@ UserList::UserList(SQLite::Database& Db_link, int max_usr) :
   try
   {
     // Test if the 'USERS_LIST' table exists
-    if ( !this->Db_link.tableExists(table_name) )
+    if ( !this->db.tableExists(table_name) )
     {
       // Begin transaction
-      SQLite::Transaction transaction(this->Db_link);
+      SQLite::Transaction transaction(this->db);
 
       // Compile a SQL query
-      this->Db_link.exec("CREATE TABLE USERS_LIST    \
+      this->db.exec("CREATE TABLE USERS_LIST    \
                     (id        INTEGER NOT NULL, \
                      f_name    TEXT NOT NULL, \
                      l_name    TEXT NOT NULL, \
@@ -61,7 +61,7 @@ User* UserList::AddUser(string f_n, string l_n, string initials)
   try
   {
     // Compile a SQL query
-    SQLite::Statement insert(this->Db_link, "INSERT INTO USERS_LIST (f_name, l_name, initials) VALUES(:f_n, :l_n, :initials)");
+    SQLite::Statement insert(this->db, "INSERT INTO USERS_LIST (f_name, l_name, initials) VALUES(:f_n, :l_n, :initials)");
 
     // Bind parameters of the SQL query
     insert.bind(":initials", initials);
@@ -69,7 +69,7 @@ User* UserList::AddUser(string f_n, string l_n, string initials)
     insert.bind(":l_n", l_n);
 
     // Begin transaction
-    SQLite::Transaction transaction(this->Db_link);
+    SQLite::Transaction transaction(this->db);
 
     // execute earlier prepared query
     insert.exec();
@@ -94,7 +94,7 @@ bool UserList::DeleteUser(int id)
   try
   {
     // Compile a SQL query
-    SQLite::Statement select(this->Db_link, "DELETE FROM USERS_LIST WHERE id = :id");
+    SQLite::Statement select(this->db, "DELETE FROM USERS_LIST WHERE id = :id");
 
     // Bind parameters of the SQL query
     select.bind(":id", id);

@@ -7,19 +7,86 @@
 
 #include "User.h"
 
-User::User(string f_n, string l_n)
+User::User(SQLite::Database& Db_link, string f_n, string l_n) : type(NORMAL), db(Db_link)
 {
+  // TODO catch exception
+  try
+  {
+    // Compile a SQL query
+    SQLite::Statement select(this->db, "SELECT * FROM USERS_LIST WHERE f_name=:f_n AND l_name=:l_n");
 
+    // Bind parameters of the SQL query
+    select.bind(":f_n", f_n);
+    select.bind(":l_n", l_n);
+
+    // Loop to execute the query step by step, to get rows of result
+    if (select.executeStep())
+    {
+      // Demonstrate how to get some typed column value
+      this->id = select.getColumn(0).getInt();
+      this->f_name = string(select.getColumn(1).getText());
+      this->l_name = string(select.getColumn(2).getText());
+      this->initials = string(select.getColumn(3).getText());
+    }
+  }
+  catch (exception& e)
+  {
+
+  }
 }
 
-User::User(string initials)
+User::User(SQLite::Database& Db_link, string initials) : type(NORMAL), db(Db_link)
 {
+  // TODO catch exception
+  try
+  {
+    // Compile a SQL query
+    SQLite::Statement select(this->db, "SELECT * FROM USERS_LIST WHERE initials=:initials");
 
+    // Bind parameters of the SQL query
+    select.bind(":initials", initials);
+
+    // Loop to execute the query step by step, to get rows of result
+    if (select.executeStep())
+    {
+      // Demonstrate how to get some typed column value
+      this->id = select.getColumn(0).getInt();
+      this->f_name = string(select.getColumn(1).getText());
+      this->l_name = string(select.getColumn(2).getText());
+      this->initials = string(select.getColumn(3).getText());
+    }
+  }
+  catch (exception& e)
+  {
+
+  }
 }
 
-User::User(int id)
+User::User(SQLite::Database& Db_link, int id) : type(NORMAL), db(Db_link)
 {
+  // TODO catch exception
+  try
+  {
+    // Compile a SQL query
+    SQLite::Statement select(this->db, "SELECT * FROM USERS_LIST WHERE id=:id");
 
+    // Bind parameters of the SQL query
+    select.bind(":id", id);
+
+    // Loop to execute the query step by step, to get rows of result
+    if (select.executeStep())
+    {
+      // Demonstrate how to get some typed column value
+      this->id = select.getColumn(0).getInt();
+      this->f_name = string(select.getColumn(1).getText());
+      this->l_name = string(select.getColumn(2).getText());
+      this->initials = string(select.getColumn(3).getText());
+    }
+  }
+  catch (exception& e)
+  {
+
+  }
 }
 
 User::~User()

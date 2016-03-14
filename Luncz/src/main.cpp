@@ -33,6 +33,10 @@ int main(int argc, char **argv)
 
     u_list.DeleteUser(1);
 
+    User jmc = User(db, "jmc");
+
+    cout<<"User:"<<jmc.GetFName()<<" "<<jmc.GetLName()<<endl;
+
   } catch (exception& e)
   {
     cout << "!!Exception: " << e.what() << std::endl;

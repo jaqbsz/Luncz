@@ -9,6 +9,9 @@
 #define USER_H_
 
 #include <string>
+#include "SQLite\sqlite3.h"
+#include "SQLiteCpp\SQLiteCpp.h"
+
 using namespace std;
 
 enum usrtype
@@ -26,10 +29,12 @@ class User
     usrtype type;
     int id;
 
+    SQLite::Database& db;    ///< Database connection
+
   public:
-    User(string f_n, string l_n);
-    User(string initials);
-    User(int id);
+    User(SQLite::Database& Db_link, string f_n, string l_n);
+    User(SQLite::Database& Db_link, string initials);
+    User(SQLite::Database& Db_link, int id);
     ~User();
 
     string GetFName();

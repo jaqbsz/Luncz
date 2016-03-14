@@ -16,7 +16,7 @@ using namespace std;
 class UserList
 {
   private:
-    SQLite::Database& Db_link;    ///< Database connection
+    SQLite::Database& db;    ///< Database connection
     const int max_users;          ///< Max number of users
     const char *table_name;
 
