@@ -15,11 +15,6 @@ using namespace std;
 
 class UserList
 {
-  private:
-    SQLite::Database& db;    ///< Database connection
-    const int max_users;          ///< Max number of users
-    const char *table_name;
-
   public:
     UserList(SQLite::Database& Db_link, int max_usr);
     ~UserList();
@@ -33,6 +28,11 @@ class UserList
      * @brief Deletes user with provided id number
      */
     bool DeleteUser(int id);
+
+  private:
+    SQLite::Database& db;         ///< Database connection
+    const int   max_users;          ///< Max number of users
+    const char *table_name;
 };
 
 #endif /* USERLIST_H_ */

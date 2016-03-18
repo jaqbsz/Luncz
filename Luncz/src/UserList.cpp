@@ -33,7 +33,7 @@ UserList::UserList(SQLite::Database& Db_link, int max_usr) :
                      f_name    TEXT NOT NULL, \
                      l_name    TEXT NOT NULL, \
                      initials  TEXT NOT NULL, \
-                     PRIMARY   KEY(ID))");
+                     PRIMARY   KEY(id))");
 
       // Commit transaction
       transaction.commit();

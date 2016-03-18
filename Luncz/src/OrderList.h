@@ -10,23 +10,52 @@
 
 using namespace std;
 
-#include <list>
 #include "Order.h"
 #include "User.h"
 
 class OrderList
 {
-  private:
-   const int max_orders;
-   list<Order> o_list ;
-
   public:
-    OrderList(int max_orders);
+    OrderList(SQLite::Database& Db_link);
     ~OrderList();
-    bool AddNewOrder(User * user, int price, int menu_item);
-    void ListOrders();
-    int GetOrderListValue();
-    int DeleteOrder(User * user);
+
+    /**
+     * @brief Adds new order to the list
+     */
+    bool AddNewOrder(User & user, int price, int menu_item);
+
+    /**
+     * @brief Deletes orders added for provided user
+     * @return Returns number of deleted elements
+     */
+    int DeleteOrder(User & user);
+
+    /**
+     * @brief Returns total number of orders
+     */
+    int GetOrderCounter();
+    /**
+     * @brief Returns number of orders for specified day
+     */
+    int GetOrderCounterDate(string date);
+    /**
+     * @brief Returns number of orders for today
+     */
+    int GetOrderCounterToday();
+
+    /**
+     * @brief Returns value of orders for today
+     */
+    int GetOrderPriceSum();
+    /**
+     * @brief Returns value of orders for specified day
+     */
+    int GetOrderPriceSum(string date);
+
+  private:
+    SQLite::Database& db;         ///< Database connection
+    const char *table_name;
+    int order_cnt;
 };
 
 #endif /* ORDERLIST_H_ */

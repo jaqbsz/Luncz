@@ -10,7 +10,7 @@
 
 using namespace std;
 
-/// Example Database
+
 static const string database_file = "luncz.db3";
 
 const int USER_CNT = 10;
@@ -27,14 +27,24 @@ int main(int argc, char **argv)
     std::cout << "SQLite database file '" << db.getFilename().c_str()<< "' opened successfully\n";
 
     db.exec("DROP TABLE IF EXISTS USERS_LIST");
+    db.exec("DROP TABLE IF EXISTS ORDER_LIST");
 
     UserList u_list = UserList(db, USER_CNT);
+    OrderList o_list = OrderList(db);
 
     User jk = User(db, u_list.AddUser("Janek", "Kos", "jk"));
     cout<<"User:"<<jk.GetFName()<<" "<<jk.GetLName()<<endl;
 
     User jmc = User(db, u_list.AddUser("John", "McClain", "jmc"));
     cout<<"User:"<<jmc.GetFName()<<" "<<jmc.GetLName()<<endl;
+
+    o_list.AddNewOrder(jmc, 13, 21);
+    o_list.AddNewOrder(jk, 13, 22);
+
+    o_list.DeleteOrder(jmc);
+
+    cout<<"number :"<<o_list.GetOrderCounterToday()<<endl;
+    cout<<"need to pay :"<<o_list.GetOrderPriceSum()<<endl;
 
   } catch (exception& e)
   {
