@@ -29,6 +29,14 @@ class UserList
      */
     bool DeleteUser(int id);
 
+    /**
+     * @brief Returns number of available users
+     */
+    int GetUserCounter()
+    {
+      return this->user_cnt;
+    }
+
   private:
     SQLite::Database& db;         ///< Database connection
     const char *table_name;
