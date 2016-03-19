@@ -6,8 +6,9 @@
  */
 
 #include "User.h"
+#include "OrderList.h"
 
-User::User(SQLite::Database& Db_link, string f_n, string l_n) : type(NORMAL), db(Db_link)
+User::User(SQLite::Database& Db_link, string f_n, string l_n) : db(Db_link)
 {
   // TODO catch exception
   try
@@ -22,11 +23,11 @@ User::User(SQLite::Database& Db_link, string f_n, string l_n) : type(NORMAL), db
     // Loop to execute the query step by step, to get rows of result
     if (select.executeStep())
     {
-      // Demonstrate how to get some typed column value
       this->id = select.getColumn(0).getInt();
       this->f_name = string(select.getColumn(1).getText());
       this->l_name = string(select.getColumn(2).getText());
       this->initials = string(select.getColumn(3).getText());
+      this->type = static_cast<usrtype> (select.getColumn(4).getInt());
     }
   }
   catch (exception& e)
@@ -35,7 +36,7 @@ User::User(SQLite::Database& Db_link, string f_n, string l_n) : type(NORMAL), db
   }
 }
 
-User::User(SQLite::Database& Db_link, string initials) : type(NORMAL), db(Db_link)
+User::User(SQLite::Database& Db_link, string initials) : db(Db_link)
 {
   // TODO catch exception
   try
@@ -54,6 +55,7 @@ User::User(SQLite::Database& Db_link, string initials) : type(NORMAL), db(Db_lin
       this->f_name = string(select.getColumn(1).getText());
       this->l_name = string(select.getColumn(2).getText());
       this->initials = string(select.getColumn(3).getText());
+      this->type = static_cast<usrtype> (select.getColumn(4).getInt());
     }
   }
   catch (exception& e)
@@ -62,7 +64,7 @@ User::User(SQLite::Database& Db_link, string initials) : type(NORMAL), db(Db_lin
   }
 }
 
-User::User(SQLite::Database& Db_link, int id) : type(NORMAL), db(Db_link)
+User::User(SQLite::Database& Db_link, int id) : db(Db_link)
 {
   // TODO catch exception
   try
@@ -73,14 +75,14 @@ User::User(SQLite::Database& Db_link, int id) : type(NORMAL), db(Db_link)
     // Bind parameters of the SQL query
     select.bind(":id", id);
 
-    // Loop to execute the query step by step, to get rows of result
+    // execute the query
     if (select.executeStep())
     {
-      // Demonstrate how to get some typed column value
       this->id = select.getColumn(0).getInt();
       this->f_name = string(select.getColumn(1).getText());
       this->l_name = string(select.getColumn(2).getText());
       this->initials = string(select.getColumn(3).getText());
+      this->type = static_cast<usrtype> (select.getColumn(4).getInt());
     }
   }
   catch (exception& e)
@@ -90,55 +92,6 @@ User::User(SQLite::Database& Db_link, int id) : type(NORMAL), db(Db_link)
 }
 
 User::~User()
-{
-
-}
-
-int User::GetId()
-{
-  return this->id;
-}
-
-string User::GetInitials()
-{
-  return this->initials;
-}
-
-string User::GetFName()
-{
-  return this->f_name;
-}
-
-string User::GetLName()
-{
-  return this->l_name;
-}
-
-usrtype User::GetType()
-{
-  return this->type;
-}
-
-void User::AddOrder(int menu_item, int cost)
-{
-
-}
-void User::AddOrder(int menu_item, int cost, User & user)
-{
-
-}
-
-void User::DeleteOrder()
-{
-
-}
-
-void User::DeleteOrder(User & user)
-{
-
-}
-
-void User::MakeOrder()
 {
 
 }

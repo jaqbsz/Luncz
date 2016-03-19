@@ -7,7 +7,6 @@
 
 #include "OrderList.h"
 #include <iostream>
-
 OrderList::OrderList(SQLite::Database& Db_link) :
   db(Db_link),
   table_name("ORDER_LIST"),
@@ -38,6 +37,10 @@ OrderList::OrderList(SQLite::Database& Db_link) :
       // Commit transaction
       transaction.commit();
     }
+    else
+    {
+      this->order_cnt = db.execAndGet("SELECT Count(*) FROM ORDER_LIST");
+    }
   }catch(exception& e)
   {
 
@@ -49,23 +52,10 @@ OrderList::~OrderList()
 
 }
 
-bool OrderList::AddNewOrder(User & user, int price, int menu_item)
+Order OrderList::AddNewOrder(User & user, int price, int menu_item)
 {
   //TODO catch exception
   //TODO check if user already exists
-  bool ret = false;
-  string date;
-
-  // update order counter
-  try
-  {
-    this->order_cnt = db.execAndGet("SELECT Count(*) FROM ORDER_LIST");
-    date = db.execAndGet("SELECT date('now')").getText("???");
-  }
-  catch (exception& e)
-  {
-
-  }
 
   // insert new order
   try
@@ -74,23 +64,28 @@ bool OrderList::AddNewOrder(User & user, int price, int menu_item)
     SQLite::Statement insert(this->db, "INSERT INTO ORDER_LIST (date, user_id, price, menu_item) VALUES(:date, :u_id, :prc, :m_item)");
 
     // Bind parameters of the SQL query
+    string date = db.execAndGet("SELECT date('now')").getText("???");
     insert.bind(":date", date);
     insert.bind(":u_id", user.GetId());
     insert.bind(":prc", price);
     insert.bind(":m_item", menu_item);
 
-
     // Begin, execute and commit transaction
     SQLite::Transaction transaction(this->db);
     insert.exec();
     transaction.commit();
+
+    // update order counter
+    this->order_cnt = db.execAndGet("SELECT Count(*) FROM ORDER_LIST");
   }
   catch (exception& e)
   {
 
   }
 
-  return ret;
+  Order order = Order(this->db, this->db.getLastInsertRowid());
+
+  return order;
 }
 
 int OrderList::DeleteOrder(User & user)
@@ -107,15 +102,8 @@ int OrderList::DeleteOrder(User & user)
     del.bind(":u_id", user.GetId());
 
     del_cnt = del.executeStep();
-  }
-  catch (exception& e)
-  {
 
-  }
-
-  // recalculate order counter
-  try
-  {
+    // update order counter
     this->order_cnt = db.execAndGet("SELECT Count(*) FROM ORDER_LIST");
   }
   catch (exception& e)
@@ -124,6 +112,29 @@ int OrderList::DeleteOrder(User & user)
   }
 
   return del_cnt;
+}
+
+void OrderList::DeleteOrder(Order & order)
+{
+  // delete elements
+  try
+  {
+    // Compile a SQL query
+    SQLite::Statement del(this->db, "DELETE FROM ORDER_LIST WHERE id = :o_id");
+
+    // Bind parameters of the SQL query
+    del.bind(":o_id", order.GetId());
+
+    // execute sql query
+    del.executeStep();
+
+    // update order counter
+    this->order_cnt = db.execAndGet("SELECT Count(*) FROM ORDER_LIST");
+  }
+  catch (exception& e)
+  {
+
+  }
 }
 
 int OrderList::GetOrderCounter()

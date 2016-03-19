@@ -12,25 +12,42 @@
 
 class Order
 {
-  private:
-    User * user;
-    int menu_item;
-    int price;
-
   public:
-    Order(int m_i, User * u, int p) : user(u), menu_item(m_i), price(p){};
+    Order(SQLite::Database& Db_link, int id);
+
     int GetPrice()
     {
       return this->price;
     }
+
     int GetMenuItem()
     {
       return this->menu_item;
     }
-    User * GetUser()
+
+    string GetDate()
     {
-      return this->user;
+      return this->date;
     }
+
+    int GetUserId()
+    {
+      return this->user_id;
+    }
+
+    int GetId()
+    {
+      return this->id;
+    }
+
+  private:
+    int menu_item;
+    int price;
+    int user_id;
+    int id;
+    string date;
+
+    SQLite::Database& db;
 };
 
 #endif /* ORDER_H_ */

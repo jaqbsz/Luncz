@@ -22,13 +22,17 @@ class OrderList
     /**
      * @brief Adds new order to the list
      */
-    bool AddNewOrder(User & user, int price, int menu_item);
+    Order AddNewOrder(User & user, int price, int menu_item);
 
     /**
      * @brief Deletes orders added for provided user
      * @return Returns number of deleted elements
      */
     int DeleteOrder(User & user);
+    /**
+     * @brief Deletes privided order from the list
+     */
+    void DeleteOrder(Order & order);
 
     /**
      * @brief Returns total number of orders

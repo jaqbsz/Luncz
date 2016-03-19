@@ -10,10 +10,10 @@
 #include <iostream>
 #include <typeinfo>
 
-UserList::UserList(SQLite::Database& Db_link, int max_usr) :
+UserList::UserList(SQLite::Database& Db_link) :
     db(Db_link),
-    max_users(max_usr),
-    table_name("USERS_LIST")
+    table_name("USERS_LIST"),
+    user_cnt(0)
 {
   //TODO recalculate user IDs
   //TODO catch exception
@@ -33,10 +33,15 @@ UserList::UserList(SQLite::Database& Db_link, int max_usr) :
                      f_name    TEXT NOT NULL, \
                      l_name    TEXT NOT NULL, \
                      initials  TEXT NOT NULL, \
+                     type      TEXT NOT NULL, \
                      PRIMARY   KEY(id))");
 
       // Commit transaction
       transaction.commit();
+    }
+    else
+    {
+      this->user_cnt = db.execAndGet("SELECT Count(*) FROM USERS_LIST");
     }
   }catch(exception& e)
   {
@@ -49,70 +54,40 @@ UserList::~UserList()
   ;
 }
 
-int UserList::AddUser(string f_n, string l_n, string initials)
+User UserList::AddUser(string f_n, string l_n, string initials)
 {
   //TODO add auto initials generation
   //TODO catch exception
   //TODO check if user already exists
 
-  int newUsr_id = 0;
-  int usr_cnt = 0;
-
-  // check user count
+  // insert new user
   try
   {
-    usr_cnt = db.execAndGet("SELECT Count(*) FROM USERS_LIST");
+    // Compile a SQL query
+    SQLite::Statement insert(this->db, "INSERT INTO USERS_LIST (f_name, l_name, initials, type) VALUES(:f_n, :l_n, :initials, :type)");
+
+    // Bind parameters of the SQL query
+    insert.bind(":initials", initials);
+    insert.bind(":f_n", f_n);
+    insert.bind(":l_n", l_n);
+    insert.bind(":type", usrtype::U_TYPE_NORMAL);
+
+    // Begin, execute and commit transaction
+    SQLite::Transaction transaction(this->db);
+    insert.exec();
+    transaction.commit();
+
+    // update user count
+    this->user_cnt = db.execAndGet("SELECT Count(*) FROM USERS_LIST");
   }
   catch (exception& e)
   {
 
   }
 
-  if ( usr_cnt < this->max_users )
-  {
-    // insert new user
-    try
-    {
-      // Compile a SQL query
-      SQLite::Statement insert(this->db, "INSERT INTO USERS_LIST (f_name, l_name, initials) VALUES(:f_n, :l_n, :initials)");
+  User user = User(this->db, this->db.getLastInsertRowid());
 
-      // Bind parameters of the SQL query
-      insert.bind(":initials", initials);
-      insert.bind(":f_n", f_n);
-      insert.bind(":l_n", l_n);
-
-      // Begin, execute and commit transaction
-      SQLite::Transaction transaction(this->db);
-      insert.exec();
-      transaction.commit();
-    }
-    catch (exception& e)
-    {
-
-    }
-
-    // get new id
-    try
-    {
-      // Compile a SQL query
-      SQLite::Statement sel(this->db, "SELECT id FROM USERS_LIST WHERE f_name=:f_n AND l_name=:l_n");
-
-      // Bind parameters of the SQL query
-      sel.bind(":f_n", f_n);
-      sel.bind(":l_n", l_n);
-
-      // Execute the query
-      if (sel.executeStep())
-      {
-        newUsr_id = sel.getColumn(0).getInt();
-      }
-    }
-    catch (exception& e)
-    {
-
-    }
-  }
-  return newUsr_id;
+  return user;
 }
 
 bool UserList::DeleteUser(int id)
@@ -130,6 +105,9 @@ bool UserList::DeleteUser(int id)
     del.bind(":id", id);
 
     ret = (bool) del.executeStep();
+
+    // update user count
+    this->user_cnt = db.execAndGet("SELECT Count(*) FROM USERS_LIST");
   }
   catch (exception& e)
   {

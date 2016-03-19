@@ -16,13 +16,13 @@ using namespace std;
 class UserList
 {
   public:
-    UserList(SQLite::Database& Db_link, int max_usr);
+    UserList(SQLite::Database& Db_link);
     ~UserList();
 
     /**
      * @brief Adds new user to the user list
      */
-    int AddUser(string f_n, string l_n, string initials);
+    User AddUser(string f_n, string l_n, string initials);
 
     /**
      * @brief Deletes user with provided id number
@@ -31,8 +31,8 @@ class UserList
 
   private:
     SQLite::Database& db;         ///< Database connection
-    const int   max_users;          ///< Max number of users
     const char *table_name;
+    int user_cnt;
 };
 
 #endif /* USERLIST_H_ */
