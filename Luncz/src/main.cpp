@@ -8,6 +8,8 @@
 #include "OrderList.h"
 #include "UserList.h"
 
+#include "debug.h"
+
 using namespace std;
 
 
@@ -24,7 +26,7 @@ int main(int argc, char **argv)
   try
   {
     SQLite::Database db(database_file, SQLITE_OPEN_READWRITE|SQLITE_OPEN_CREATE);
-    std::cout << "SQLite database file '" << db.getFilename().c_str()<< "' opened successfully\n";
+    DEBUG("SQLite database file '" << db.getFilename().c_str()<< "' opened successfully"<<endl);
 
     db.exec("DROP TABLE IF EXISTS USERS_LIST");
     db.exec("DROP TABLE IF EXISTS ORDER_LIST");
@@ -33,18 +35,18 @@ int main(int argc, char **argv)
     OrderList o_list = OrderList(db);
 
     User jk = u_list.AddUser("Janek", "Kos", "jk");
-    cout<<"User:"<<jk.GetFName()<<" "<<jk.GetLName()<<endl;
+    DEBUG("User:"<<jk.GetFName()<<" "<<jk.GetLName()<<endl);
 
     User jmc = u_list.AddUser("John", "McClain", "jmc");
-    cout<<"User:"<<jmc.GetFName()<<" "<<jmc.GetLName()<<endl;
+    DEBUG("User:"<<jmc.GetFName()<<" "<<jmc.GetLName()<<endl);
 
     Order order1 = o_list.AddNewOrder(jmc, 13, 21);
     o_list.AddNewOrder(jk, 13, 22);
 
     o_list.DeleteOrder(order1);
 
-    cout<<"number :"<<o_list.GetOrderCounterToday()<<endl;
-    cout<<"need to pay :"<<o_list.GetOrderPriceSum()<<endl;
+    DEBUG("number :"<<o_list.GetOrderCounterToday()<<endl);
+    DEBUG("need to pay :"<<o_list.GetOrderPriceSum()<<endl);
 
   } catch (exception& e)
   {

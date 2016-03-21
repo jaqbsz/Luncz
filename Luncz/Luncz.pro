@@ -35,4 +35,5 @@ HEADERS += \
     src/Order.h \
     src/OrderList.h \
     src/User.h \
-    src/UserList.h
+    src/UserList.h \
+    debug.h
