@@ -1,3 +1,5 @@
+
+#include <QDebug>
 #include "server.h"
 
 //**************************************************************************************
@@ -40,8 +42,6 @@ void Server::slot_newConnection()
       connect(sock, SIGNAL(readyRead()),this, SLOT(slot_readyRead()));
     }
   }while (sock);
-
-  connect(this, SIGNAL(signal_newRequest(void*,QByteArray)), this, SLOT(slot_newResponse(void*,QByteArray)));
 }
 
 //**************************************************************************************
@@ -80,7 +80,10 @@ void Server::slot_readyRead()
 
     // emit event with received data
     if (data.at(0)=='w')
+    {
+      qDebug() << "new request emited"<<endl;
       emit signal_newRequest(static_cast<void*>(sock), data);
+    }
 }
 
 //**************************************************************************************

@@ -23,7 +23,8 @@ SOURCES += \
     src/UserList.cpp \
     src/SQLite/sqlite3.c \
     src/Server.cpp \
-    src/LThread.cpp
+    src/LThread.cpp \
+    src/Worker.cpp
 
 HEADERS += \
     src/SQLite/sqlite3.h \
@@ -41,4 +42,5 @@ HEADERS += \
     src/UserList.h \
     debug.h \
     src/Server.h \
-    src/LThread.h
+    src/LThread.h \
+    src/Worker.h

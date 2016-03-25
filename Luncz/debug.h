@@ -3,13 +3,15 @@
 
 #define _DEBUG_
 
+#include <iostream>
 
-#ifdef _DEBUG_
-#define DEBUG(x) (std::cerr<<"DBG: "<<x)
-#else
-#define DEBUG(x)
-#endif
-
-
+namespace std
+{
+  #ifdef _DEBUG_
+  #define DEBUG(x) (std::cerr<<"DBG: "<<x)
+  #else
+  #define DEBUG(x)
+  #endif
+}
 
 #endif // DEBUG_H

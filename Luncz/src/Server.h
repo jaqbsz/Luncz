@@ -2,7 +2,6 @@
 #define SERVER_H
 
 #include <QObject>
-#include <QDebug>
 #include <QTcpServer>
 #include <QTcpSocket>
 
@@ -18,16 +17,14 @@ class Server : public QObject
 
   signals:
     // send event to worker thread
-    void signal_newRequest(void * socket_desc, QByteArray);
+    void signal_newRequest(void * socket_desc, QByteArray data);
 
   public slots:
     void slot_newConnection();
     void slot_disconnected();
     void slot_bytesWritten(qint64 bytes);
     void slot_readyRead();
-
-    // will be moved to worker thread
-    void slot_newResponse(void * socket_desc, QByteArray);
+    void slot_newResponse(void * socket_desc, QByteArray data);
 
   private:
     QTcpServer *server;
