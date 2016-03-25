@@ -1,4 +1,5 @@
 QT += core
+QT += network
 QT -= gui
 
 CONFIG += c++11
@@ -20,7 +21,9 @@ SOURCES += \
     src/OrderList.cpp \
     src/User.cpp \
     src/UserList.cpp \
-    src/SQLite/sqlite3.c
+    src/SQLite/sqlite3.c \
+    src/Server.cpp \
+    src/LThread.cpp
 
 HEADERS += \
     src/SQLite/sqlite3.h \
@@ -36,4 +39,6 @@ HEADERS += \
     src/OrderList.h \
     src/User.h \
     src/UserList.h \
-    debug.h
+    debug.h \
+    src/Server.h \
+    src/LThread.h
