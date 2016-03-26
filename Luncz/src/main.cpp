@@ -15,6 +15,7 @@ int main(int argc, char **argv)
   LThread th_server("SERVER");
   LThread th_worker("WORKER");
 
+  // TODO be sure this is queued connection
   QObject::connect(&o_server, SIGNAL(signal_newRequest(void*,QByteArray)), &o_worker, SLOT(slot_newRequest(void*,QByteArray)));
   QObject::connect(&o_worker, SIGNAL(signal_newResponse(void*,QByteArray)), &o_server, SLOT(slot_newResponse(void*,QByteArray)));
 

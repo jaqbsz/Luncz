@@ -29,6 +29,9 @@ class Server : public QObject
   private:
     QTcpServer *server;
 
+    // for test purposes
+    QByteArray test_JSON();
+
     // currently not necessary to list connected clients
     //list<QTcpSocket*> sock_list;
 };

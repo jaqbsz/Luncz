@@ -1,5 +1,9 @@
 
 #include <QDebug>
+#include <QJsonDocument>
+
+#include <QFile>
+
 #include "server.h"
 
 //**************************************************************************************
@@ -82,7 +86,8 @@ void Server::slot_readyRead()
     if (data.at(0)=='w')
     {
       qDebug() << "new request emited"<<endl;
-      emit signal_newRequest(static_cast<void*>(sock), data);
+      QByteArray test_data = test_JSON();
+      emit signal_newRequest(static_cast<void*>(sock), test_data);
     }
 }
 
@@ -98,4 +103,21 @@ void Server::slot_newResponse(void * socket_desc, QByteArray data)
 
   sock->write(data);
   sock->flush();
+}
+
+//**************************************************************************************
+//* test_JSON()
+//*
+//**************************************************************************************
+QByteArray Server::test_JSON()
+{
+  QFile file;
+
+  file.setFileName("../json/user.json");
+  file.open(QIODevice::ReadOnly | QIODevice::Text);
+
+  QByteArray data = file.readAll();
+  file.close();
+
+  return data;
 }
