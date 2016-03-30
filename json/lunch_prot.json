@@ -1,0 +1,18 @@
+
+{"lunchprot" : "0.1", "method": "list_users", "id": null}
+{"lunchprot" : "0.1", "result": [{"F_NAME": null, "L_NAME": null, "INITIALS": null, "U_ID": null}], "id": null}
+
+{"lunchprot" : "0.1", "method": "list_orders", "id": null}
+{"lunchprot" : "0.1", "result": [{"MENU_ITEM": null, "PRICE": null, "U_INITALS": null, "O_ID": null, "DATE": null}], "id": null}
+
+
+{"lunchprot" : "0.1", "method": "add_user", "params" : {"F_NAME": null, "L_NAME": null, "INITIALS": null}, "id": }
+{"lunchprot" : "0.1", "method": "modify_user", "params" : {"F_NAME": null, "L_NAME": null, "INITIALS": null, "U_ID": null,}, "id": null}
+{"lunchprot" : "0.1", "result": {"F_NAME": null, "L_NAME": null, "INITIALS": null, "U_ID": null}, "id": null}
+
+{"lunchprot" : "0.1", "method": "add_order", "params" : {"MENU_ITEM": null, "PRICE": null, "U_ID": null}, "id": null}
+{"lunchprot" : "0.1", "method": "modify_order", "params" : {"MENU_ITEM": null, "PRICE": null, "U_ID": null, "O_ID": null, "DATE": null}, "id": null}
+{"lunchprot" : "0.1", "result": {"MENU_ITEM": null, "PRICE": null, "U_INITALS": null, "O_ID": null, "DATE": null}, "id": null}
+
+{"lunchprot" : "0.1", "error": {"code": -32601, "message": "Method not found"}, "id": null}
+{"lunchprot" : "0.1", "error": {"code": -32700, "message": "Parse error"}, "id": null}
