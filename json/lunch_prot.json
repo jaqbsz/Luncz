@@ -1,16 +1,32 @@
 {
+	"r_gen_res":      {"lunchprot" : "0.1", "result": null, "id": null},
+	"m_gen_meth":     {"lunchprot" : "0.1", "method": null, "id": null},
+	"m_gen_meth_par": {"lunchprot" : "0.1", "method": null, "params" : null, "id": null},
+	
 	"m_list_users":   {"lunchprot" : "0.1", "method": "list_users", "id": null},
 	"r_list_users":   {"lunchprot" : "0.1", "result": [{"F_NAME": null, "L_NAME": null, "INITIALS": null, "U_ID": null}], "id": null},
+	
 	"m_list_orders":  {"lunchprot" : "0.1", "method": "list_orders", "id": null},
 	"r_list_orders":  {"lunchprot" : "0.1", "result": [{"MENU_ITEM": null, "PRICE": null, "U_INITALS": null, "O_ID": null, "DATE": null}], "id": null},
+	
 	"m_add_user":     {"lunchprot" : "0.1", "method": "add_user", "params" : {"F_NAME": null, "L_NAME": null, "INITIALS": null}, "id": null},
 	"r_add_user": 	  {"lunchprot" : "0.1", "result": {"F_NAME": null, "L_NAME": null, "INITIALS": null, "U_ID": null}, "id": null},
+	
+	"m_delete_user":  {"lunchprot" : "0.1", "method": "delete_user", "params" : {"U_ID": null}, "id": null},
+	"r_delete_user":  {"lunchprot" : "0.1", "result": [{"F_NAME": null, "L_NAME": null, "INITIALS": null, "U_ID": null}], "id": null},
+	
 	"m_modify_user":  {"lunchprot" : "0.1", "method": "modify_user", "params" : {"F_NAME": null, "L_NAME": null, "INITIALS": null, "U_ID": null}, "id": null},
 	"r_modify_user":  {"lunchprot" : "0.1", "result": {"F_NAME": null, "L_NAME": null, "INITIALS": null, "U_ID": null}, "id": null},
+	
 	"m_add_order": 	  {"lunchprot" : "0.1", "method": "add_order", "params" : {"MENU_ITEM": null, "PRICE": null, "U_ID": null}, "id": null},
 	"r_add_order": 	  {"lunchprot" : "0.1", "result": {"MENU_ITEM": null, "PRICE": null, "U_INITALS": null, "O_ID": null, "DATE": null}, "id": null},
+	
+	"m_delete_order": {"lunchprot" : "0.1", "method": "delete_order", "params" : {"O_ID": null}, "id": null},
+	"r_delete_order": {"lunchprot" : "0.1", "result": [{"MENU_ITEM": null, "PRICE": null, "U_INITALS": null, "O_ID": null, "DATE": null}], "id": null},
+	
 	"m_modify_order": {"lunchprot" : "0.1", "method": "modify_order", "params" : {"MENU_ITEM": null, "PRICE": null, "U_ID": null, "O_ID": null, "DATE": null}, "id": null},
 	"r_modify_order": {"lunchprot" : "0.1", "result": {"MENU_ITEM": null, "PRICE": null, "U_INITALS": null, "O_ID": null, "DATE": null}, "id": null},
+	
 	"e_32601": 		  {"lunchprot" : "0.1", "error": {"code": -32601, "message": "Method not found"}, "id": null},
 	"e_32700": 		  {"lunchprot" : "0.1", "error": {"code": -32700, "message": "Parse error"}, "id": null}
 }
