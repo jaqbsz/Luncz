@@ -80,7 +80,7 @@ void Server::slot_readyRead()
     // read received data
     QByteArray data = sock->readAll();
 
-    //TODO process data againt the protocol
+    //TODO process data against the protocol
 
     // emit event with received data
     if (data.at(0)=='w')
@@ -94,14 +94,15 @@ void Server::slot_readyRead()
 //**************************************************************************************
 //* slot_newResponse()
 //*
+//* note: in_data is a copy here - check intertherad communication in QT
 //**************************************************************************************
-void Server::slot_newResponse(void * socket_desc, QByteArray data)
+void Server::slot_newResponse(void * socket_desc, const QByteArray &in_data)
 {
   QTcpSocket* sock = static_cast<QTcpSocket*>(socket_desc);
 
   qDebug() << "new resnponse..."<<endl;
 
-  sock->write(data);
+  sock->write(in_data);
   sock->flush();
 }
 
@@ -113,7 +114,7 @@ QByteArray Server::test_JSON()
 {
   QFile file;
 
-  file.setFileName("../json/user.json");
+  file.setFileName("../json/test_list_users.json");
   file.open(QIODevice::ReadOnly | QIODevice::Text);
 
   QByteArray data = file.readAll();

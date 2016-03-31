@@ -90,6 +90,8 @@ Order OrderList::AddNewOrder(User & user, int price, int menu_item)
 
 int OrderList::DeleteOrder(User & user)
 {
+  //TODO recalculate order IDs
+
   int del_cnt = 0;
 
   // delete elements
@@ -116,6 +118,8 @@ int OrderList::DeleteOrder(User & user)
 
 void OrderList::DeleteOrder(Order & order)
 {
+  //TODO recalculate order IDs
+
   // delete elements
   try
   {

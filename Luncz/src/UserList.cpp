@@ -93,6 +93,7 @@ User UserList::AddUser(string f_n, string l_n, string initials)
 bool UserList::DeleteUser(int id)
 {
   //TODO catch exception
+  //TODO recalculate user IDs
 
   bool ret = false;
 

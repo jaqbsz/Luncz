@@ -17,14 +17,14 @@ class Server : public QObject
 
   signals:
     // send event to worker thread
-    void signal_newRequest(void * socket_desc, QByteArray data);
+    void signal_newRequest(void * socket_desc, const QByteArray &in_data);
 
   public slots:
     void slot_newConnection();
     void slot_disconnected();
     void slot_bytesWritten(qint64 bytes);
     void slot_readyRead();
-    void slot_newResponse(void * socket_desc, QByteArray data);
+    void slot_newResponse(void * socket_desc, const QByteArray &in_data);
 
   private:
     QTcpServer *server;
