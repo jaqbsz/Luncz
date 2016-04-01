@@ -24,10 +24,6 @@ class Worker : public QObject
 
     QByteArray * data;
     const void * client;
-
-    //TODO make a class to use in LDatabase class as well
-    QJsonDocument lunchRpc;
-    QByteArray getRpcFile(const char * file_name);
 };
 
 #endif // WORKER_H

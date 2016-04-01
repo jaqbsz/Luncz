@@ -4,6 +4,7 @@
 #include <QJsonObject>
 
 #include "Worker.h"
+#include "LRpcMethod.h"
 
 //**************************************************************************************
 //* constructor
@@ -11,8 +12,7 @@
 //**************************************************************************************
 Worker::Worker(QObject *parent) :
   QObject(parent),
-  ldb(),
-  lunchRpc(QJsonDocument::fromJson(getRpcFile("../json/lunch_prot.json")))
+  ldb()
 {
 }
 
@@ -30,38 +30,53 @@ void Worker::slot_newRequest(void * socket_desc, const QByteArray &in_data)
   QJsonParseError parseError;
   QJsonDocument in_json(QJsonDocument::fromJson(in_data, &parseError));
 
-  if(parseError.error==QJsonParseError::NoError)  //JSON is the correct format
+  if(parseError.error!=QJsonParseError::NoError)  //JSON is the correct format
   {
     qDebug()<<"json file correct";
 
     QJsonObject jsonMethod = in_json.object();
     QJsonObject::const_iterator i_method = jsonMethod.find("method");
 
+    //TODO throw exception and send parse error message
     if (i_method == jsonMethod.end())
       return;
 
-    QString str = i_method.value().toString();
+    LRpcMethod rpc_met = i_method.value().toString();
 
-    if (str == "list_users")
+    switch ( rpc_met.getId() )
     {
-      out_json(ldb.ListUsers().toObject());
-    }
-    else
-    {
-      qDebug() << "error - invalid request";
+      case M_LIST_USERS:
+        {
+          QJsonObject result = ldb.getResultObj(rpc_met);
+
+          result["result"] = ldb.ListUsers();
+          out_json.setObject(result);
+        }
+        break;
+
+      case M_LIST_ORDERS:
+      case M_ADD_USER:
+      case M_DELETE_USER:
+      case M_MODIFY_USER:
+      case M_ADD_ORDER:
+      case M_DELETE_ORDER:
+      case M_MODIFY_ORDER:
+
+      default:
+        qDebug() << "error - invalid request";
+        out_json.setObject(ldb.getErrorObj("e_32601"));
+        break;
     }
   }
   else
   {
     qDebug()<<"json format error!";
 
-    QJsonObject objError = this->lunchRpc.object();
-    QJsonObject::const_iterator i_error = objError.find("e_32700");
-    out_json(i_error);
+    out_json.setObject(ldb.getErrorObj("e_32700"));
   }
 
 
-  emit signal_newResponse(socket_desc, out_json.toJson());
+  emit signal_newResponse(socket_desc, out_json.toJson(QJsonDocument::Compact));
 }
 
 
