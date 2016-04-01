@@ -8,34 +8,16 @@
 static const string database_file = "luncz.db3";
 
 LDatabase::LDatabase() :
+  LRpc("../json/lunch_prot.json"),
   db(database_file, SQLITE_OPEN_READWRITE|SQLITE_OPEN_CREATE),
   uList(db),
-  oList(db),
-  lunchRpc(QJsonDocument::fromJson(getRpcFile("../json/lunch_prot.json")))
+  oList(db)
 {
 #ifdef TESTS
   this->db.exec("DROP TABLE IF EXISTS USERS_LIST");
   this->db.exec("DROP TABLE IF EXISTS ORDER_LIST");
 #endif
 }
-
-//**************************************************************************************
-//* getRpcFile()
-//*
-//**************************************************************************************
-QByteArray LDatabase::getRpcFile(const char * file_name)
-{
-  QFile file;
-
-  file.setFileName(file_name);
-  file.open(QIODevice::ReadOnly | QIODevice::Text);
-
-  QByteArray out_data = file.readAll();
-  file.close();
-
-  return out_data;
-}
-
 
 //**************************************************************************************
 //* ListUsers()
@@ -45,7 +27,7 @@ QJsonValue LDatabase::ListUsers()
 {
   //TODO throw exceptions
 
-  QJsonObject objMethod = this->lunchRpc.object();
+  QJsonObject objMethod = this->getRpcObj();
   QJsonObject::const_iterator i_method = objMethod.find("r_list_users");
 
   if (i_method == objMethod.end())
@@ -60,7 +42,9 @@ QJsonValue LDatabase::ListUsers()
   QJsonObject res_obj = i_result.value().toArray().at(0).toObject();
 
   QJsonArray result;
+
   int ucnt = this->uList.GetUserCounter();
+
   for (int i = 0; i < ucnt; i++)
   {
     try

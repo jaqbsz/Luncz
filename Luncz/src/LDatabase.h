@@ -11,8 +11,9 @@
 
 #include "OrderList.h"
 #include "UserList.h"
+#include "Lrpc.h"
 
-class LDatabase
+class LDatabase : public LRpc
 {
   public:
     LDatabase();
@@ -29,10 +30,6 @@ class LDatabase
     SQLite::Database db;         ///< Database connection
     UserList uList;
     OrderList oList;
-
-    //TODO make a class to use in worker calss as well
-    QJsonDocument lunchRpc;
-    QByteArray getRpcFile(const char * file_name);
 };
 
 #endif // LDATABASE_H
