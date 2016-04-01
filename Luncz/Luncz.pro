@@ -24,7 +24,10 @@ SOURCES += \
     src/SQLite/sqlite3.c \
     src/Server.cpp \
     src/LThread.cpp \
-    src/Worker.cpp
+    src/Worker.cpp \
+    src/LDatabase.cpp \
+    src/Lrpc.cpp \
+    src/LRpcMethod.cpp
 
 HEADERS += \
     src/SQLite/sqlite3.h \
@@ -43,4 +46,7 @@ HEADERS += \
     debug.h \
     src/Server.h \
     src/LThread.h \
-    src/Worker.h
+    src/Worker.h \
+    src/LDatabase.h \
+    src/Lrpc.h \
+    src/LRpcMethod.h
