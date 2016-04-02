@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-#include "LDatabase.h"
+#include "LRpcResult.h"
 
 class Worker : public QObject
 {
@@ -20,7 +20,7 @@ class Worker : public QObject
     void slot_newRequest(void * socket_desc, const QByteArray &in_data);
 
   private:
-    LDatabase ldb;
+    LRpcResult lrpcRes;
 
     QByteArray * data;
     const void * client;

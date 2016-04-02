@@ -12,7 +12,7 @@
 //**************************************************************************************
 Worker::Worker(QObject *parent) :
   QObject(parent),
-  ldb()
+  lrpcRes()
 {
 }
 
@@ -30,7 +30,7 @@ void Worker::slot_newRequest(void * socket_desc, const QByteArray &in_data)
   QJsonParseError parseError;
   QJsonDocument in_json(QJsonDocument::fromJson(in_data, &parseError));
 
-  if(parseError.error!=QJsonParseError::NoError)  //JSON is the correct format
+  if(parseError.error==QJsonParseError::NoError)  //JSON is the correct format
   {
     qDebug()<<"json file correct";
 
@@ -47,15 +47,24 @@ void Worker::slot_newRequest(void * socket_desc, const QByteArray &in_data)
     {
       case M_LIST_USERS:
         {
-          QJsonObject result = ldb.getResultObj(rpc_met);
+          QJsonObject result = lrpcRes.getResultObj("r_list_users");
 
-          result["result"] = ldb.ListUsers();
+          result["result"] = lrpcRes.ListUsers();
+          out_json.setObject(result);
+        }
+        break;
+
+      case M_ADD_USER:
+        {
+          QJsonObject result = lrpcRes.getResultObj("r_add_user");
+          QJsonObject::const_iterator i_params = jsonMethod.find("params");
+
+          result["result"] = lrpcRes.AddUser(i_params.value());
           out_json.setObject(result);
         }
         break;
 
       case M_LIST_ORDERS:
-      case M_ADD_USER:
       case M_DELETE_USER:
       case M_MODIFY_USER:
       case M_ADD_ORDER:
@@ -64,7 +73,7 @@ void Worker::slot_newRequest(void * socket_desc, const QByteArray &in_data)
 
       default:
         qDebug() << "error - invalid request";
-        out_json.setObject(ldb.getErrorObj("e_32601"));
+        out_json.setObject(lrpcRes.getErrorObj("e_32601"));
         break;
     }
   }
@@ -72,7 +81,7 @@ void Worker::slot_newRequest(void * socket_desc, const QByteArray &in_data)
   {
     qDebug()<<"json format error!";
 
-    out_json.setObject(ldb.getErrorObj("e_32700"));
+    out_json.setObject(lrpcRes.getErrorObj("e_32700"));
   }
 
 

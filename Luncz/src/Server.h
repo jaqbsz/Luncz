@@ -30,7 +30,8 @@ class Server : public QObject
     QTcpServer *server;
 
     // for test purposes
-    QByteArray test_JSON();
+    QByteArray test_add_user();
+    QByteArray test_list_users();
 
     // currently not necessary to list connected clients
     //list<QTcpSocket*> sock_list;

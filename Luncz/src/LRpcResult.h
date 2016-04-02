@@ -13,15 +13,15 @@
 #include "UserList.h"
 #include "Lrpc.h"
 
-class LDatabase : public LRpc
+class LRpcResult : public LRpc
 {
   public:
-    LDatabase();
+    LRpcResult();
 
     // TODO use interface for this
     QJsonValue ListUsers();
 //    QJsonValue ListOrders();
-//    QJsonValue AddUser(const QJsonValue &params);
+    QJsonValue AddUser(const QJsonValue &params);
 //    QJsonValue AddOrder(const QJsonValue &params);
 //    QJsonValue ModifyUser(const QJsonValue &params);
 //    QJsonValue ModifyOrder(const QJsonValue &params);

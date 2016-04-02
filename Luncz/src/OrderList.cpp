@@ -16,6 +16,10 @@ OrderList::OrderList(SQLite::Database& Db_link) :
   //TODO catch exception
   //TODO add unique for initials
 
+#ifdef TESTS
+  this->db.exec("DROP TABLE IF EXISTS ORDER_LIST");
+#endif
+
   try
   {
     // Test if the 'ORDER_LIST' table exists

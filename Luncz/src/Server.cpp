@@ -86,7 +86,14 @@ void Server::slot_readyRead()
     if (data.at(0)=='w')
     {
       qDebug() << "new request emited"<<endl;
-      QByteArray test_data = test_JSON();
+      QByteArray test_data = test_list_users();
+      emit signal_newRequest(static_cast<void*>(sock), test_data);
+    }
+
+    if (data.at(0)=='e')
+    {
+      qDebug() << "new request emited"<<endl;
+      QByteArray test_data = test_add_user();
       emit signal_newRequest(static_cast<void*>(sock), test_data);
     }
 }
@@ -110,11 +117,24 @@ void Server::slot_newResponse(void * socket_desc, const QByteArray &in_data)
 //* test_JSON()
 //*
 //**************************************************************************************
-QByteArray Server::test_JSON()
+QByteArray Server::test_list_users()
 {
   QFile file;
 
   file.setFileName("../json/test_list_users.json");
+  file.open(QIODevice::ReadOnly | QIODevice::Text);
+
+  QByteArray data = file.readAll();
+  file.close();
+
+  return data;
+}
+
+QByteArray Server::test_add_user()
+{
+  QFile file;
+
+  file.setFileName("../json/test_add_user.json");
   file.open(QIODevice::ReadOnly | QIODevice::Text);
 
   QByteArray data = file.readAll();

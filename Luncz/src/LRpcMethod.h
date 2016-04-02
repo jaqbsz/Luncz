@@ -20,23 +20,22 @@ typedef enum
 class LRpcMethod
 {
   public:
-    LRpcMethod(QString method_name);
+    LRpcMethod(const QString & method_name);
+    LRpcMethod(const char * method_name);
 
-    T_RPCMETHODID getId();
+    T_RPCMETHODID getId() const
+    {
+      return this->id;
+    }
+
+    const char * getName() const
+    {
+      return this->name;
+    }
 
   private:
     T_RPCMETHODID id;
-
-    const char * method[LRPC_MAX] = {
-      "m_list_users",
-      "m_list_orders",
-      "m_add_user",
-      "m_delete_user",
-      "m_modify_user",
-      "m_add_order",
-      "m_delete_order",
-      "m_modify_order"
-    };
+    const char * name;
 };
 
 #endif // LRPCMETHOD_H

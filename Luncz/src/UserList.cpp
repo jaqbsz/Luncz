@@ -6,7 +6,6 @@
  */
 
 #include "UserList.h"
-#include "Zamawiacz.h"
 #include <iostream>
 #include <typeinfo>
 
@@ -18,6 +17,10 @@ UserList::UserList(SQLite::Database& Db_link) :
   //TODO recalculate user IDs
   //TODO catch exception
   //TODO add unique for initials
+
+#ifdef TESTS
+  //this->db.exec("DROP TABLE IF EXISTS USERS_LIST");
+#endif
 
   try
   {

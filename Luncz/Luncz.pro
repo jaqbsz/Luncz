@@ -10,6 +10,8 @@ CONFIG -= app_bundle
 
 TEMPLATE = app
 
+DEFINES += TESTS
+
 SOURCES += \
     src/SQLiteCpp/Backup.cpp \
     src/SQLiteCpp/Column.cpp \
@@ -25,9 +27,9 @@ SOURCES += \
     src/Server.cpp \
     src/LThread.cpp \
     src/Worker.cpp \
-    src/LDatabase.cpp \
     src/Lrpc.cpp \
-    src/LRpcMethod.cpp
+    src/LRpcMethod.cpp \
+    src/LRpcResult.cpp
 
 HEADERS += \
     src/SQLite/sqlite3.h \
@@ -47,6 +49,6 @@ HEADERS += \
     src/Server.h \
     src/LThread.h \
     src/Worker.h \
-    src/LDatabase.h \
     src/Lrpc.h \
-    src/LRpcMethod.h
+    src/LRpcMethod.h \
+    src/LRpcResult.h
