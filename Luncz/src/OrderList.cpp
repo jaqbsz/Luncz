@@ -56,7 +56,7 @@ OrderList::~OrderList()
 
 }
 
-Order OrderList::AddNewOrder(User & user, int price, int menu_item)
+Order OrderList::AddOrder(User & user, int price, int menu_item)
 {
   //TODO catch exception
   //TODO check if user already exists

@@ -79,3 +79,12 @@ QJsonValue LRpc::getResultValue(const QString & res_name)
 
   return i_result.value();
 }
+
+//**************************************************************************************
+//* getFrameId()
+//*
+//**************************************************************************************
+QJsonValue LRpc::getFrameId(const QJsonObject &frameObj)
+{
+  return frameObj.value("id");
+}

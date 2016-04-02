@@ -40,6 +40,8 @@ class Order
       return this->id;
     }
 
+    string GetUserInitials();
+
   private:
     int menu_item;
     int price;

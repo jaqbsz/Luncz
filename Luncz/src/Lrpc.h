@@ -20,7 +20,8 @@ class LRpc
 
     QJsonObject getErrorObj(const char * err_name);
     QJsonObject getResultObj(const QString &res_name);
-    QJsonValue getResultValue(const QString &res_name);
+    QJsonValue  getResultValue(const QString &res_name);
+    QJsonValue  getFrameId(const QJsonObject & frameObj);
 
   private:
     QJsonObject rpcObj;

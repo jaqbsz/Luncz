@@ -22,7 +22,7 @@ class OrderList
     /**
      * @brief Adds new order to the list
      */
-    Order AddNewOrder(User & user, int price, int menu_item);
+    Order AddOrder(User & user, int price, int menu_item);
 
     /**
      * @brief Deletes orders added for provided user
