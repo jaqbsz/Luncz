@@ -33,9 +33,15 @@ class LRpcMethod
       return this->name;
     }
 
+    const char * getNameObj() const
+    {
+      return this->nameObj;
+    }
+
   private:
     T_RPCMETHODID id;
     const char * name;
+    const char * nameObj;
 };
 
 #endif // LRPCMETHOD_H

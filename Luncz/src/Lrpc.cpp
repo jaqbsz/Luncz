@@ -40,15 +40,46 @@ QJsonObject LRpc::getResultObj(const QString & res_name)
 {
   //TODO throw exceptions
 
+  QJsonObject result;
+
   QJsonObject::const_iterator i_method = this->rpcObj.find(res_name);
 
   if (i_method == this->rpcObj.end())
   {
-    qDebug() << "getResultObj parse error";
-    throw "parse error";
+    qDebug() << "getResultObj error e_32601";
+    result = this->getErrorObj("e_32601");
+  }
+  else
+  {
+    result = i_method.value().toObject();
   }
 
-  return i_method.value().toObject();
+  return result;
+}
+
+//**************************************************************************************
+//* getResultObj()
+//*
+//**************************************************************************************
+QJsonObject LRpc::getResultObj(const LRpcMethod &lrpcMeth)
+{
+  //TODO throw exceptions
+
+  QJsonObject result;
+
+  QJsonObject::const_iterator i_method = this->rpcObj.find(lrpcMeth.getNameObj());
+
+  if (i_method == this->rpcObj.end())
+  {
+    qDebug() << "getResultObj error e_32601";
+    result = this->getErrorObj("e_32601");
+  }
+  else
+  {
+    result = i_method.value().toObject();
+  }
+
+  return result;
 }
 
 //**************************************************************************************
@@ -87,4 +118,13 @@ QJsonValue LRpc::getResultValue(const QString & res_name)
 QJsonValue LRpc::getFrameId(const QJsonObject &frameObj)
 {
   return frameObj.value("id");
+}
+
+//**************************************************************************************
+//* getParams()
+//*
+//**************************************************************************************
+QJsonValue LRpc::getParams(const QJsonObject &frameObj)
+{
+  return frameObj.find("params").value();
 }

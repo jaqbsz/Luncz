@@ -39,7 +39,8 @@ LRpcMethod::LRpcMethod(const QString &method_name)
     if ( ( method_name == method[i].name ) || ( method_name == method_obj[i].name ) )
     {
       this->id = static_cast<T_RPCMETHODID>(i);
-      this->name = method_obj[i].name;
+      this->nameObj = method_obj[i].name;
+      this->name = method[i].name;
       break;
     }
   }
@@ -48,6 +49,7 @@ LRpcMethod::LRpcMethod(const QString &method_name)
   {
     this->id = LRPC_MAX;
     this->name = "null";
+    this->nameObj = "null";
     // TODO throw exception
   }
 }
@@ -64,7 +66,8 @@ LRpcMethod::LRpcMethod(const char *method_name)
     if ( ( strcmp(method_name, method[i].name) == 0 ) || ( strcmp(method_name, method_obj[i].name) == 0 ) )
     {
       this->id = static_cast<T_RPCMETHODID>(i);
-      this->name = method_obj[i].name;
+      this->nameObj = method_obj[i].name;
+      this->name = method[i].name;;
       break;
     }
   }
@@ -73,6 +76,7 @@ LRpcMethod::LRpcMethod(const char *method_name)
   {
     this->id = LRPC_MAX;
     this->name = "null";
+    this->nameObj = "null";
     // TODO throw exception
   }
 }
