@@ -17,7 +17,7 @@ Server::Server(QObject *parent) : QObject(parent)
   // define callback for new connections
   connect(this->server, SIGNAL(newConnection()), this, SLOT(slot_newConnection()));
 
-  if(!server->listen(QHostAddress::Any, 23))
+  if(!server->listen(QHostAddress::Any, 9876))
   {
       qDebug() << "Server could not start";
   }
@@ -38,6 +38,8 @@ void Server::slot_newConnection()
   do
   {
     QTcpSocket* sock = this->server->nextPendingConnection();
+
+    qDebug() << "New connection established.";
 
     if ( sock )
     {

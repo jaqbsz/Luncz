@@ -30,7 +30,7 @@ void Worker::slot_newRequest(void * socket_desc, const QByteArray &in_data)
   QJsonParseError parseError;
   QJsonDocument in_json(QJsonDocument::fromJson(in_data, &parseError));
 
-  if(parseError.error==QJsonParseError::NoError)  //JSON is the correct format
+  if(parseError.error==QJsonParseError::NoError)  //JSON is in the correct format
   {
     qDebug()<<"json file correct";
 

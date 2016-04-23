@@ -13,7 +13,7 @@ class Worker : public QObject
     explicit Worker(QObject *parent = 0);
 
   signals:
-    // send event to worker thread
+    // send event to servers thread
     void signal_newResponse(void * socket_desc, const QByteArray &in_data);
 
   public slots:
