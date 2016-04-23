@@ -48,6 +48,7 @@ class Order
     int user_id;
     int id;
     string date;
+    string initials;
 
     SQLite::Database& db;
 };

@@ -45,5 +45,25 @@ Order::Order(SQLite::Database& Db_link, int id) :
 //**************************************************************************************
 string Order::GetUserInitials()
 {
-  return "null";
+  // TODO catch exception
+  try
+  {
+    // Compile a SQL query
+    SQLite::Statement select(this->db, "SELECT * FROM USERS_LIST WHERE id=:u_id");
+
+    // Bind parameters of the SQL query
+    select.bind(":u_id", this->GetUserId());
+
+    // Loop to execute the query step by step, to get rows of result
+    if (select.executeStep())
+    {
+      this->initials = string(select.getColumn(3).getText());
+    }
+
+    return this->initials;
+  }
+  catch (exception& e)
+  {
+
+  }
 }
