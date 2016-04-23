@@ -124,7 +124,8 @@ QJsonValue LRpcResult::AddOrder(const QJsonValue &params)
   QJsonObject par_obj = params.toObject();
 
   // user that orders
-  User user = User(this->db, par_obj.value("U_ID").toInt());
+  User user = User(this->db, par_obj.value("U_INITIALS").toString().toStdString());
+  //TODO send error code in case no such user
 
   // add new order
   Order new_order = oList.AddOrder(user,
