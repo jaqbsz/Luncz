@@ -17,7 +17,7 @@ Server::Server(QObject *parent) : QObject(parent)
   // define callback for new connections
   connect(this->server, SIGNAL(newConnection()), this, SLOT(slot_newConnection()));
 
-  if(!server->listen(QHostAddress::Any, 23))
+  if(!server->listen(QHostAddress::Any, 9876))
   {
       qDebug() << "Server could not start";
   }
@@ -82,29 +82,29 @@ void Server::slot_readyRead()
     // read received data
     QByteArray data = sock->readAll();
 
-    //TODO process data against the protocol
+    emit signal_newRequest(static_cast<void*>(sock), data);
 
     // emit event with received data
-    if (data.at(0)=='w')
-    {
-      qDebug() << "new request emited"<<endl;
-      QByteArray test_data = test_list_users();
-      emit signal_newRequest(static_cast<void*>(sock), test_data);
-    }
+//    if (data.at(0)=='w')
+//    {
+//      qDebug() << "new request emited"<<endl;
+//      QByteArray test_data = test_list_users();
+//      emit signal_newRequest(static_cast<void*>(sock), test_data);
+//    }
 
-    if (data.at(0)=='e')
-    {
-      qDebug() << "new request emited"<<endl;
-      QByteArray test_data = test_add_user();
-      emit signal_newRequest(static_cast<void*>(sock), test_data);
-    }
+//    if (data.at(0)=='e')
+//    {
+//      qDebug() << "new request emited"<<endl;
+//      QByteArray test_data = test_add_user();
+//      emit signal_newRequest(static_cast<void*>(sock), test_data);
+//    }
 
-    if (data.at(0)=='r')
-    {
-      qDebug() << "new request emited"<<endl;
-      QByteArray test_data = test_add_order();
-      emit signal_newRequest(static_cast<void*>(sock), test_data);
-    }
+//    if (data.at(0)=='r')
+//    {
+//      qDebug() << "new request emited"<<endl;
+//      QByteArray test_data = test_add_order();
+//      emit signal_newRequest(static_cast<void*>(sock), test_data);
+//    }
 }
 
 //**************************************************************************************
