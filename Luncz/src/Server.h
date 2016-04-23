@@ -24,13 +24,14 @@ class Server : public QObject
     void slot_disconnected();
     void slot_bytesWritten(qint64 bytes);
     void slot_readyRead();
-    void slot_newResponse(void * socket_desc, const QByteArray &in_data);
+    void slot_newResponse(void * socket_desc, const QByteArray &out_data);
 
   private:
     QTcpServer *server;
 
     // for test purposes
     QByteArray test_add_user();
+    QByteArray test_add_order();
     QByteArray test_list_users();
 
     // currently not necessary to list connected clients

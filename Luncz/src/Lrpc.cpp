@@ -67,7 +67,7 @@ QJsonObject LRpc::getResultObj(const LRpcMethod &lrpcMeth)
 
   QJsonObject result;
 
-  QJsonObject::const_iterator i_method = this->rpcObj.find(lrpcMeth.getNameObj());
+  QJsonObject::const_iterator i_method = this->rpcObj.find(lrpcMeth.respObj());
 
   if (i_method == this->rpcObj.end())
   {
@@ -97,7 +97,6 @@ QJsonValue LRpc::getResultValue(const QString & res_name)
     qDebug() << "getResultValue OBJ parse error";
     throw "parse error";
   }
-
 
   QJsonObject objResult = i_method.value().toObject();
   QJsonObject::const_iterator i_result = objResult.find("result");

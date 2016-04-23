@@ -25,23 +25,29 @@ class LRpcMethod
 
     T_RPCMETHODID getId() const
     {
-      return this->id;
+      return this->m_id;
     }
 
     const char * getName() const
     {
-      return this->name;
+      return this->m_name;
     }
 
     const char * getNameObj() const
     {
-      return this->nameObj;
+      return this->m_nameObj;
+    }
+
+    const char * respObj() const
+    {
+      return this->m_respObj;
     }
 
   private:
-    T_RPCMETHODID id;
-    const char * name;
-    const char * nameObj;
+    T_RPCMETHODID m_id;
+    const char * m_name;
+    const char * m_nameObj;
+    const char * m_respObj;
 };
 
 #endif // LRPCMETHOD_H

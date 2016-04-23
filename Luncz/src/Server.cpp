@@ -17,7 +17,7 @@ Server::Server(QObject *parent) : QObject(parent)
   // define callback for new connections
   connect(this->server, SIGNAL(newConnection()), this, SLOT(slot_newConnection()));
 
-  if(!server->listen(QHostAddress::Any, 9876))
+  if(!server->listen(QHostAddress::Any, 23))
   {
       qDebug() << "Server could not start";
   }
@@ -98,6 +98,13 @@ void Server::slot_readyRead()
       QByteArray test_data = test_add_user();
       emit signal_newRequest(static_cast<void*>(sock), test_data);
     }
+
+    if (data.at(0)=='r')
+    {
+      qDebug() << "new request emited"<<endl;
+      QByteArray test_data = test_add_order();
+      emit signal_newRequest(static_cast<void*>(sock), test_data);
+    }
 }
 
 //**************************************************************************************
@@ -105,14 +112,15 @@ void Server::slot_readyRead()
 //*
 //* note: in_data is a copy here - check intertherad communication in QT
 //**************************************************************************************
-void Server::slot_newResponse(void * socket_desc, const QByteArray &in_data)
+void Server::slot_newResponse(void * socket_desc, const QByteArray &out_data)
 {
   QTcpSocket* sock = static_cast<QTcpSocket*>(socket_desc);
 
   qDebug() << "new resnponse..."<<endl;
+  qDebug() << out_data;
 
-  sock->write(in_data);
-  sock->flush();
+//  sock->write(out_data);
+//  sock->flush();
 }
 
 //**************************************************************************************
@@ -137,6 +145,19 @@ QByteArray Server::test_add_user()
   QFile file;
 
   file.setFileName("../json/test_add_user.json");
+  file.open(QIODevice::ReadOnly | QIODevice::Text);
+
+  QByteArray data = file.readAll();
+  file.close();
+
+  return data;
+}
+
+QByteArray Server::test_add_order()
+{
+  QFile file;
+
+  file.setFileName("../json/test_add_order.json");
   file.open(QIODevice::ReadOnly | QIODevice::Text);
 
   QByteArray data = file.readAll();
