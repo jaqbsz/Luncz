@@ -119,8 +119,8 @@ void Server::slot_newResponse(void * socket_desc, const QByteArray &out_data)
   qDebug() << "new resnponse..."<<endl;
   qDebug() << out_data;
 
-//  sock->write(out_data);
-//  sock->flush();
+  sock->write(out_data);
+  sock->flush();
 }
 
 //**************************************************************************************
