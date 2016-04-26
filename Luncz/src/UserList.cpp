@@ -32,12 +32,11 @@ UserList::UserList(SQLite::Database& Db_link) :
 
       // Compile a SQL query
       this->db.exec("CREATE TABLE USERS_LIST    \
-                    (id        INTEGER NOT NULL, \
+                    (id        INTEGER PRIMARY KEY AUTOINCREMENT, \
                      f_name    TEXT NOT NULL, \
                      l_name    TEXT NOT NULL, \
                      initials  TEXT NOT NULL, \
-                     type      TEXT NOT NULL, \
-                     PRIMARY   KEY(id))");
+                     type      TEXT NOT NULL)");
 
       // Commit transaction
       transaction.commit();
@@ -88,6 +87,7 @@ User UserList::AddUser(string f_n, string l_n, string initials)
 
   }
 
+  //TODO prepare empty constructor to run this command inside try catch statement
   User user = User(this->db, this->db.getLastInsertRowid());
 
   return user;
@@ -112,6 +112,21 @@ bool UserList::DeleteUser(int id)
 
     // update user count
     this->user_cnt = db.execAndGet("SELECT Count(*) FROM USERS_LIST");
+
+    // update id to nextid-1
+    for (int i = 0; i < this->user_cnt; i++)
+    {
+      //prepare update statement
+      SQLite::Statement upd(this->db, "UPDATE USERS_LIST SET id = :new_id WHERE id = :old_id");
+
+      upd.bind(":new_id", id+i);
+      upd.bind(":old_id", id+i+1);
+
+      upd.executeStep();
+    }
+
+    // reset autoincrement base value
+    db.exec("UPDATE SQLITE_SEQUENCE SET seq = 0 WHERE NAME = 'USERS_LIST'");
   }
   catch (exception& e)
   {
