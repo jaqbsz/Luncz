@@ -66,4 +66,6 @@ string Order::GetUserInitials()
   {
 
   }
+
+  return "null";
 }

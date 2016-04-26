@@ -10,7 +10,7 @@ CONFIG -= app_bundle
 
 TEMPLATE = app
 
-DEFINES += NOTESTS
+DEFINES += __TESTS
 
 SOURCES += \
     src/SQLiteCpp/Backup.cpp \

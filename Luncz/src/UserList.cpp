@@ -19,7 +19,7 @@ UserList::UserList(SQLite::Database& Db_link) :
   //TODO add unique for initials
 
 #ifdef TESTS
-  //this->db.exec("DROP TABLE IF EXISTS USERS_LIST");
+  this->db.exec("DROP TABLE IF EXISTS USERS_LIST");
 #endif
 
   try

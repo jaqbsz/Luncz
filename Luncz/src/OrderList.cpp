@@ -30,13 +30,12 @@ OrderList::OrderList(SQLite::Database& Db_link) :
 
       // Compile a SQL query
       this->db.exec("CREATE TABLE ORDER_LIST    \
-                    (id        INTEGER NOT NULL, \
+                    (id        INTEGER PRIMARY KEY AUTOINCREMENT,\
                      date      TEXT NOT NULL, \
                      user_id   INTEGER NOT NULL, \
                      price     INTEGER NOT NULL, \
                      menu_item TEXT NOT NULL, \
-                     FOREIGN KEY(user_id) REFERENCES USERS_LIST(id), \
-                     PRIMARY KEY(ID))");
+                     FOREIGN KEY(user_id) REFERENCES USERS_LIST(id))");
 
       // Commit transaction
       transaction.commit();
@@ -48,6 +47,12 @@ OrderList::OrderList(SQLite::Database& Db_link) :
   }catch(exception& e)
   {
 
+  }
+
+
+  {
+    Order order = Order(this->db, 2);
+    DeleteOrder(order);
   }
 }
 
@@ -94,7 +99,7 @@ Order OrderList::AddOrder(User & user, int price, int menu_item)
 
 int OrderList::DeleteOrder(User & user)
 {
-  //TODO recalculate order IDs
+  //TODO recalculate order IDs!!!
 
   int del_cnt = 0;
 
@@ -127,17 +132,34 @@ void OrderList::DeleteOrder(Order & order)
   // delete elements
   try
   {
+    int orderId = order.GetId();
+
     // Compile a SQL query
     SQLite::Statement del(this->db, "DELETE FROM ORDER_LIST WHERE id = :o_id");
 
     // Bind parameters of the SQL query
-    del.bind(":o_id", order.GetId());
+    del.bind(":o_id", orderId);
 
     // execute sql query
     del.executeStep();
 
     // update order counter
     this->order_cnt = db.execAndGet("SELECT Count(*) FROM ORDER_LIST");
+
+    // update id to nextid-1
+    for (int i = 0; i < this->order_cnt; i++)
+    {
+      //prepare update statement
+      SQLite::Statement upd(this->db, "UPDATE ORDER_LIST SET id = :new_id WHERE id = :old_id");
+
+      upd.bind(":new_id", orderId+i);
+      upd.bind(":old_id", orderId+i+1);
+
+      upd.executeStep();
+    }
+
+    // reset autoincrement base value
+    db.exec("UPDATE SQLITE_SEQUENCE SET seq = 0 WHERE NAME = 'ORDER_LIST'");
   }
   catch (exception& e)
   {
