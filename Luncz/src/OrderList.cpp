@@ -48,12 +48,6 @@ OrderList::OrderList(SQLite::Database& Db_link) :
   {
 
   }
-
-
-  {
-    Order order = Order(this->db, 2);
-    DeleteOrder(order);
-  }
 }
 
 OrderList::~OrderList()
@@ -92,6 +86,7 @@ Order OrderList::AddOrder(User & user, int price, int menu_item)
 
   }
 
+  //TODO prepare empty constructor to run this command inside try catch statement
   Order order = Order(this->db, this->db.getLastInsertRowid());
 
   return order;
