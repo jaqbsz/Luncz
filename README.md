@@ -1,2 +1,2 @@
 # Luncz
-Server application for Lunch project.
+Server for Lunch client.
