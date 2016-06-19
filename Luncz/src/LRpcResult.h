@@ -18,20 +18,22 @@ class LRpcResult : public LRpc
   public:
     LRpcResult();
 
-    // TODO use interface for this
     QJsonValue ListUsers();
     QJsonValue ListOrders();
+
     QJsonValue AddUser(const QJsonValue &params);
     QJsonValue AddOrder(const QJsonValue &params);
+
     QJsonValue DeleteUser(const QJsonValue &params);
     QJsonValue DeleteOrder(const QJsonValue &params);
+
     QJsonValue ModifyUser(const QJsonValue &params);
     QJsonValue ModifyOrder(const QJsonValue &params);
 
   private:
-    SQLite::Database db;         ///< Database connection
-    UserList uList;
-    OrderList oList;
+    SQLite::Database m_db;         ///< Database connection
+    UserList m_uList;
+    OrderList m_oList;
 };
 
 #endif // LDATABASE_H

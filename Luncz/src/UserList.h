@@ -16,13 +16,29 @@ using namespace std;
 class UserList
 {
   public:
-    UserList(SQLite::Database& Db_link);
+    explicit UserList(SQLite::Database& Db_link);
+
     ~UserList();
 
     /**
      * @brief Adds new user to the user list
      */
     User AddUser(string f_n, string l_n, string initials);
+
+    /**
+     * @brief Gets existing user by id
+     */
+    User GetUser(int id);
+
+    /**
+     * @brief Gets existing user by initials
+     */
+    User GetUser(string initials);
+
+    /**
+     * @brief Gets existing user by fname and lname
+     */
+    User GetUser(string f_n, string l_n);
 
     /**
      * @brief Deletes user with provided id number
@@ -32,15 +48,12 @@ class UserList
     /**
      * @brief Returns number of available users
      */
-    int GetUserCounter()
-    {
-      return this->user_cnt;
-    }
+    int GetUserCounter() { return m_userCnt; }
 
   private:
-    SQLite::Database& db;         ///< Database connection
+    SQLite::Database& m_db;         ///< Database connection
     const char *table_name;
-    int user_cnt;
+    int m_userCnt;
 };
 
 #endif /* USERLIST_H_ */

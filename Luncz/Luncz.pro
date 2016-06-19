@@ -19,9 +19,7 @@ SOURCES += \
     src/SQLiteCpp/Statement.cpp \
     src/SQLiteCpp/Transaction.cpp \
     src/main.cpp \
-    src/Order.cpp \
     src/OrderList.cpp \
-    src/User.cpp \
     src/UserList.cpp \
     src/SQLite/sqlite3.c \
     src/Server.cpp \

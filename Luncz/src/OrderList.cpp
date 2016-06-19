@@ -7,42 +7,47 @@
 
 #include "OrderList.h"
 #include <iostream>
+
+//**************************************************************************************
+//* constructor
+//*
+//**************************************************************************************
 OrderList::OrderList(SQLite::Database& Db_link) :
-  db(Db_link),
-  table_name("ORDER_LIST"),
-  order_cnt(0)
+  m_db(Db_link),
+  m_tableName("ORDER_LIST"),
+  m_orderCnt(0)
 {
   //TODO recalculate user IDs?
   //TODO catch exception
   //TODO add unique for initials
 
 #ifdef TESTS
-  this->db.exec("DROP TABLE IF EXISTS ORDER_LIST");
+  m_db.exec("DROP TABLE IF EXISTS ORDER_LIST");
 #endif
 
   try
   {
     // Test if the 'ORDER_LIST' table exists
-    if ( !this->db.tableExists(table_name) )
+    if ( !m_db.tableExists(m_tableName) )
     {
       // Begin transaction
-      SQLite::Transaction transaction(this->db);
+      SQLite::Transaction transaction(m_db);
 
       // Compile a SQL query
-      this->db.exec("CREATE TABLE ORDER_LIST    \
-                    (id        INTEGER PRIMARY KEY AUTOINCREMENT,\
-                     date      TEXT NOT NULL, \
-                     user_id   INTEGER NOT NULL, \
-                     price     INTEGER NOT NULL, \
-                     menu_item TEXT NOT NULL, \
-                     FOREIGN KEY(user_id) REFERENCES USERS_LIST(id))");
+      m_db.exec("CREATE TABLE ORDER_LIST    \
+                (id        INTEGER PRIMARY KEY AUTOINCREMENT,\
+                 date      TEXT NOT NULL, \
+                 user_id   INTEGER NOT NULL, \
+                 price     INTEGER NOT NULL, \
+                 menu_item TEXT NOT NULL, \
+                 FOREIGN KEY(user_id) REFERENCES USERS_LIST(id))");
 
       // Commit transaction
       transaction.commit();
     }
     else
     {
-      this->order_cnt = db.execAndGet("SELECT Count(*) FROM ORDER_LIST");
+      m_orderCnt = m_db.execAndGet("SELECT Count(*) FROM ORDER_LIST");
     }
   }catch(exception& e)
   {
@@ -50,11 +55,19 @@ OrderList::OrderList(SQLite::Database& Db_link) :
   }
 }
 
+//**************************************************************************************
+//* deconstructor
+//*
+//**************************************************************************************
 OrderList::~OrderList()
 {
 
 }
 
+//**************************************************************************************
+//* AddOrder
+//*
+//**************************************************************************************
 Order OrderList::AddOrder(User & user, int price, int menu_item)
 {
   //TODO catch exception
@@ -64,53 +77,122 @@ Order OrderList::AddOrder(User & user, int price, int menu_item)
   try
   {
     // Compile a SQL query
-    SQLite::Statement insert(this->db, "INSERT INTO ORDER_LIST (date, user_id, price, menu_item) VALUES(:date, :u_id, :prc, :m_item)");
+    SQLite::Statement insert(m_db, "INSERT INTO ORDER_LIST (date, user_id, price, menu_item) VALUES(:date, :u_id, :prc, :m_item)");
 
     // Bind parameters of the SQL query
-    string date = db.execAndGet("SELECT date('now')").getText("???");
+    string date = m_db.execAndGet("SELECT date('now')").getText("???");
     insert.bind(":date", date);
-    insert.bind(":u_id", user.GetId());
+    insert.bind(":u_id", user.Id());
     insert.bind(":prc", price);
     insert.bind(":m_item", menu_item);
 
     // Begin, execute and commit transaction
-    SQLite::Transaction transaction(this->db);
+    SQLite::Transaction transaction(m_db);
     insert.exec();
     transaction.commit();
 
     // update order counter
-    this->order_cnt = db.execAndGet("SELECT Count(*) FROM ORDER_LIST");
+    m_orderCnt = m_db.execAndGet("SELECT Count(*) FROM ORDER_LIST");
   }
   catch (exception& e)
   {
 
   }
 
-  //TODO prepare empty constructor to run this command inside try catch statement
-  Order order = Order(this->db, this->db.getLastInsertRowid());
+  return GetOrder(m_db.getLastInsertRowid());
+}
+
+//**************************************************************************************
+//* GetOrder
+//*
+//**************************************************************************************
+Order OrderList::GetOrder(int id)
+{
+  // TODO catch exception
+
+  Order order;
+
+  try
+  {
+    // Compile a SQL query
+    SQLite::Statement select(m_db, "SELECT * FROM ORDER_LIST WHERE id=:id");
+
+    // Bind parameters of the SQL query
+    select.bind(":id", id);
+
+    // Loop to execute the query step by step, to get rows of result
+    if (select.executeStep())
+    {
+      order.OrderId(select.getColumn(0).getInt());
+      order.Date(string(select.getColumn(1).getText()));
+      order.UserId(select.getColumn(2).getInt());
+      order.Price(select.getColumn(3).getInt());
+      order.MenuItem(select.getColumn(4).getInt());
+      order.UserInitials(UserInitials(order.UserId()));
+    }
+  }
+  catch (exception& e)
+  {
+
+  }
 
   return order;
 }
 
-int OrderList::DeleteOrder(User & user)
+//**************************************************************************************
+//* UserInitials
+//*
+//**************************************************************************************
+string OrderList::UserInitials(int uid)
 {
-  //TODO recalculate order IDs!!!
+  // TODO catch exception
 
-  int del_cnt = 0;
+  string initials = "--";
 
-  // delete elements
   try
   {
     // Compile a SQL query
-    SQLite::Statement del(this->db, "DELETE FROM ORDER_LIST WHERE user_id = :u_id");
+    SQLite::Statement select(m_db, "SELECT * FROM USERS_LIST WHERE id=:u_id");
 
     // Bind parameters of the SQL query
-    del.bind(":u_id", user.GetId());
+    select.bind(":u_id", uid);
+
+    // Loop to execute the query step by step, to get rows of result
+    if (select.executeStep())
+    {
+      initials = string(select.getColumn(3).getText());
+    }
+  }
+  catch (exception& e)
+  {
+
+  }
+
+  return initials;
+}
+
+//**************************************************************************************
+//* DeleteOrder
+//*
+//**************************************************************************************
+int OrderList::DeleteOrder(User & user)
+{
+  int del_cnt = 0;
+
+  try
+  {
+    // Compile a SQL query
+    SQLite::Statement del(m_db, "DELETE FROM ORDER_LIST WHERE user_id = :u_id");
+
+    // Bind parameters of the SQL query
+    del.bind(":u_id", user.Id());
 
     del_cnt = del.executeStep();
 
     // update order counter
-    this->order_cnt = db.execAndGet("SELECT Count(*) FROM ORDER_LIST");
+    m_orderCnt = m_db.execAndGet("SELECT Count(*) FROM ORDER_LIST");
+
+    //TODO update id to nextid-1
   }
   catch (exception& e)
   {
@@ -120,17 +202,18 @@ int OrderList::DeleteOrder(User & user)
   return del_cnt;
 }
 
+//**************************************************************************************
+//* DeleteOrder
+//*
+//**************************************************************************************
 void OrderList::DeleteOrder(Order & order)
 {
-  //TODO recalculate order IDs
-
-  // delete elements
   try
   {
-    int orderId = order.GetId();
+    int orderId = order.OrderId();
 
     // Compile a SQL query
-    SQLite::Statement del(this->db, "DELETE FROM ORDER_LIST WHERE id = :o_id");
+    SQLite::Statement del(m_db, "DELETE FROM ORDER_LIST WHERE id = :o_id");
 
     // Bind parameters of the SQL query
     del.bind(":o_id", orderId);
@@ -139,13 +222,13 @@ void OrderList::DeleteOrder(Order & order)
     del.executeStep();
 
     // update order counter
-    this->order_cnt = db.execAndGet("SELECT Count(*) FROM ORDER_LIST");
+    m_orderCnt = m_db.execAndGet("SELECT Count(*) FROM ORDER_LIST");
 
     // update id to nextid-1
-    for (int i = 0; i < this->order_cnt; i++)
+    for (int i = 0; i < m_orderCnt; i++)
     {
       //prepare update statement
-      SQLite::Statement upd(this->db, "UPDATE ORDER_LIST SET id = :new_id WHERE id = :old_id");
+      SQLite::Statement upd(m_db, "UPDATE ORDER_LIST SET id = :new_id WHERE id = :old_id");
 
       upd.bind(":new_id", orderId+i);
       upd.bind(":old_id", orderId+i+1);
@@ -154,7 +237,7 @@ void OrderList::DeleteOrder(Order & order)
     }
 
     // reset autoincrement base value
-    db.exec("UPDATE SQLITE_SEQUENCE SET seq = 0 WHERE NAME = 'ORDER_LIST'");
+    m_db.exec("UPDATE SQLITE_SEQUENCE SET seq = 0 WHERE NAME = 'ORDER_LIST'");
   }
   catch (exception& e)
   {
@@ -162,11 +245,19 @@ void OrderList::DeleteOrder(Order & order)
   }
 }
 
+//**************************************************************************************
+//* GetOrderCounter
+//*
+//**************************************************************************************
 int OrderList::GetOrderCounter()
 {
-  return this->order_cnt;
+  return m_orderCnt;
 }
 
+//**************************************************************************************
+//* GetOrderCounterDate
+//*
+//**************************************************************************************
 int OrderList::GetOrderCounterDate(string date)
 {
   //TODO validate date string
@@ -177,7 +268,7 @@ int OrderList::GetOrderCounterDate(string date)
   try
   {
     // Compile a SQL query
-    SQLite::Statement sel(this->db, "SELECT Count(date) FROM ORDER_LIST WHERE date=:date");
+    SQLite::Statement sel(m_db, "SELECT Count(date) FROM ORDER_LIST WHERE date=:date");
 
     // Bind parameters of the SQL query
     sel.bind(":date", date);
@@ -196,6 +287,10 @@ int OrderList::GetOrderCounterDate(string date)
   return ret_cnt;
 }
 
+//**************************************************************************************
+//* GetOrderCounterToday
+//*
+//**************************************************************************************
 int OrderList::GetOrderCounterToday()
 {
   int ret_cnt = 0;
@@ -203,10 +298,10 @@ int OrderList::GetOrderCounterToday()
   // count orders
   try
   {
-    string date = db.execAndGet("SELECT date('now')").getText("???");
+    string date = m_db.execAndGet("SELECT date('now')").getText("???");
 
     // Compile a SQL query
-    SQLite::Statement sel(this->db, "SELECT Count(date) FROM ORDER_LIST WHERE date=:date");
+    SQLite::Statement sel(m_db, "SELECT Count(date) FROM ORDER_LIST WHERE date=:date");
 
     // Bind parameters of the SQL query
     sel.bind(":date", date);
@@ -225,6 +320,10 @@ int OrderList::GetOrderCounterToday()
   return ret_cnt;
 }
 
+//**************************************************************************************
+//* GetOrderPriceSum
+//*
+//**************************************************************************************
 int OrderList::GetOrderPriceSum()
 {
   int ret_val = 0;
@@ -234,7 +333,7 @@ int OrderList::GetOrderPriceSum()
   // get current date
   try
   {
-    date = db.execAndGet("SELECT date('now')").getText("???");
+    date = m_db.execAndGet("SELECT date('now')").getText("???");
   }
   catch (exception& e)
   {
@@ -245,7 +344,7 @@ int OrderList::GetOrderPriceSum()
   try
   {
     // Compile a SQL query
-    SQLite::Statement sel(this->db, "SELECT price FROM ORDER_LIST WHERE date=:date");
+    SQLite::Statement sel(m_db, "SELECT price FROM ORDER_LIST WHERE date=:date");
 
     // Bind parameters of the SQL query
     sel.bind(":date", date);
@@ -264,6 +363,10 @@ int OrderList::GetOrderPriceSum()
   return ret_val;
 }
 
+//**************************************************************************************
+//* GetOrderPriceSum
+//*
+//**************************************************************************************
 int OrderList::GetOrderPriceSum(string date)
 {
   int ret_val = 0;
@@ -272,7 +375,7 @@ int OrderList::GetOrderPriceSum(string date)
   try
   {
     // Compile a SQL query
-    SQLite::Statement sel(this->db, "SELECT price FROM ORDER_LIST WHERE date=:date");
+    SQLite::Statement sel(m_db, "SELECT price FROM ORDER_LIST WHERE date=:date");
 
     // Bind parameters of the SQL query
     sel.bind(":date", date);

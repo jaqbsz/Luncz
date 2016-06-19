@@ -25,6 +25,11 @@ class OrderList
     Order AddOrder(User & user, int price, int menu_item);
 
     /**
+     * @brief Gets existing order by id
+     */
+    Order GetOrder(int id);
+
+    /**
      * @brief Deletes orders added for provided user
      * @return Returns number of deleted elements
      */
@@ -57,9 +62,11 @@ class OrderList
     int GetOrderPriceSum(string date);
 
   private:
-    SQLite::Database& db;         ///< Database connection
-    const char *table_name;
-    int order_cnt;
+    SQLite::Database& m_db;
+    const char *m_tableName;
+    int m_orderCnt;
+
+    string UserInitials(int uid);
 };
 
 #endif /* ORDERLIST_H_ */

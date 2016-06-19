@@ -9,41 +9,44 @@
 #include <iostream>
 #include <typeinfo>
 
+//**************************************************************************************
+//* constructor
+//*
+//**************************************************************************************
 UserList::UserList(SQLite::Database& Db_link) :
-    db(Db_link),
+    m_db(Db_link),
     table_name("USERS_LIST"),
-    user_cnt(0)
+    m_userCnt(0)
 {
-  //TODO recalculate user IDs
   //TODO catch exception
   //TODO add unique for initials
 
 #ifdef TESTS
-  this->db.exec("DROP TABLE IF EXISTS USERS_LIST");
+  db.exec("DROP TABLE IF EXISTS USERS_LIST");
 #endif
 
   try
   {
-    // Test if the 'USERS_LIST' table exists
-    if ( !this->db.tableExists(table_name) )
+    // check if the 'USERS_LIST' table exists
+    if ( !m_db.tableExists(table_name) )
     {
       // Begin transaction
-      SQLite::Transaction transaction(this->db);
+      SQLite::Transaction transaction(m_db);
 
       // Compile a SQL query
-      this->db.exec("CREATE TABLE USERS_LIST    \
-                    (id        INTEGER PRIMARY KEY AUTOINCREMENT, \
-                     f_name    TEXT NOT NULL, \
-                     l_name    TEXT NOT NULL, \
-                     initials  TEXT NOT NULL, \
-                     type      TEXT NOT NULL)");
+      m_db.exec("CREATE TABLE USERS_LIST    \
+                (id        INTEGER PRIMARY KEY AUTOINCREMENT, \
+                 f_name    TEXT NOT NULL, \
+                 l_name    TEXT NOT NULL, \
+                 initials  TEXT NOT NULL, \
+                 type      TEXT NOT NULL)");
 
       // Commit transaction
       transaction.commit();
     }
     else
     {
-      this->user_cnt = db.execAndGet("SELECT Count(*) FROM USERS_LIST");
+      m_userCnt = m_db.execAndGet("SELECT Count(*) FROM USERS_LIST");
     }
   }catch(exception& e)
   {
@@ -51,11 +54,19 @@ UserList::UserList(SQLite::Database& Db_link) :
   }
 }
 
+//**************************************************************************************
+//* deconstructor
+//*
+//**************************************************************************************
 UserList::~UserList()
 {
   ;
 }
 
+//**************************************************************************************
+//* AddUser
+//*
+//**************************************************************************************
 User UserList::AddUser(string f_n, string l_n, string initials)
 {
   //TODO add auto initials generation
@@ -66,33 +77,144 @@ User UserList::AddUser(string f_n, string l_n, string initials)
   try
   {
     // Compile a SQL query
-    SQLite::Statement insert(this->db, "INSERT INTO USERS_LIST (f_name, l_name, initials, type) VALUES(:f_n, :l_n, :initials, :type)");
+    SQLite::Statement insert(m_db, "INSERT INTO USERS_LIST (f_name, l_name, initials, type) VALUES(:f_n, :l_n, :initials, :type)");
+
+    int type = static_cast <std::size_t>( UType::U_TYPE_NORMAL );
 
     // Bind parameters of the SQL query
     insert.bind(":initials", initials);
     insert.bind(":f_n", f_n);
     insert.bind(":l_n", l_n);
-    insert.bind(":type", usrtype::U_TYPE_NORMAL);
+    insert.bind(":type", type );
 
     // Begin, execute and commit transaction
-    SQLite::Transaction transaction(this->db);
+    SQLite::Transaction transaction(m_db);
     insert.exec();
     transaction.commit();
 
     // update user count
-    this->user_cnt = db.execAndGet("SELECT Count(*) FROM USERS_LIST");
+    m_userCnt = m_db.execAndGet("SELECT Count(*) FROM USERS_LIST");
   }
   catch (exception& e)
   {
 
   }
 
-  //TODO prepare empty constructor to run this command inside try catch statement
-  User user = User(this->db, this->db.getLastInsertRowid());
-
-  return user;
+  return GetUser(m_db.getLastInsertRowid());
 }
 
+//**************************************************************************************
+//* GetUser
+//*
+//**************************************************************************************
+User UserList::GetUser(int id)
+{
+  // TODO catch exception
+
+  User usr;
+
+  try
+  {
+    // Compile a SQL query
+    SQLite::Statement select(m_db, "SELECT * FROM USERS_LIST WHERE id=:id");
+
+    // Bind parameters of the SQL query
+    select.bind(":id", id);
+
+    // execute the query
+    if (select.executeStep())
+    {
+      usr.Id(select.getColumn(0).getInt());
+      usr.FName(string(select.getColumn(1).getText()));
+      usr.LName(string(select.getColumn(2).getText()));
+      usr.Initials(string(select.getColumn(3).getText()));
+      usr.Type(static_cast<UType> (select.getColumn(4).getInt()));
+    }
+  }
+  catch (exception& e)
+  {
+
+  }
+
+  return usr;
+}
+
+//**************************************************************************************
+//* GetUser
+//*
+//**************************************************************************************
+User UserList::GetUser(string initials)
+{
+  // TODO catch exception
+
+  User usr;
+
+  try
+  {
+    // Compile a SQL query
+    SQLite::Statement select(m_db, "SELECT * FROM USERS_LIST WHERE initials=:initials");
+
+    // Bind parameters of the SQL query
+    select.bind(":initials", initials);
+
+    // Loop to execute the query step by step, to get rows of result
+    if (select.executeStep())
+    {
+      usr.Id(select.getColumn(0).getInt());
+      usr.FName(string(select.getColumn(1).getText()));
+      usr.LName(string(select.getColumn(2).getText()));
+      usr.Initials(string(select.getColumn(3).getText()));
+      usr.Type(static_cast<UType> (select.getColumn(4).getInt()));
+    }
+  }
+  catch (exception& e)
+  {
+
+  }
+
+  return usr;
+}
+
+//**************************************************************************************
+//* GetUser
+//*
+//**************************************************************************************
+User UserList::GetUser(string f_n, string l_n)
+{
+  // TODO catch exception
+
+  User usr;
+
+  try
+  {
+    // Compile a SQL query
+    SQLite::Statement select(m_db, "SELECT * FROM USERS_LIST WHERE f_name=:f_n AND l_name=:l_n");
+
+    // Bind parameters of the SQL query
+    select.bind(":f_n", f_n);
+    select.bind(":l_n", l_n);
+
+    // Loop to execute the query step by step, to get rows of result
+    if (select.executeStep())
+    {
+      usr.Id(select.getColumn(0).getInt());
+      usr.FName(string(select.getColumn(1).getText()));
+      usr.LName(string(select.getColumn(2).getText()));
+      usr.Initials(string(select.getColumn(3).getText()));
+      usr.Type(static_cast<UType> (select.getColumn(4).getInt()));
+    }
+  }
+  catch (exception& e)
+  {
+
+  }
+  return usr;
+}
+
+//**************************************************************************************
+//* DeleteUser
+//*
+//**************************************************************************************
 bool UserList::DeleteUser(int id)
 {
   //TODO catch exception
@@ -103,21 +225,21 @@ bool UserList::DeleteUser(int id)
   try
   {
     // Compile a SQL query
-    SQLite::Statement del(this->db, "DELETE FROM USERS_LIST WHERE id = :id");
+    SQLite::Statement del(m_db, "DELETE FROM USERS_LIST WHERE id = :id");
 
     // Bind parameters of the SQL query
     del.bind(":id", id);
 
-    ret = (bool) del.executeStep();
+    ret = static_cast <bool> (del.executeStep());
 
     // update user count
-    this->user_cnt = db.execAndGet("SELECT Count(*) FROM USERS_LIST");
+    m_userCnt = m_db.execAndGet("SELECT Count(*) FROM USERS_LIST");
 
     // update id to nextid-1
-    for (int i = 0; i < this->user_cnt; i++)
+    for (int i = 0; i < m_userCnt; i++)
     {
       //prepare update statement
-      SQLite::Statement upd(this->db, "UPDATE USERS_LIST SET id = :new_id WHERE id = :old_id");
+      SQLite::Statement upd(m_db, "UPDATE USERS_LIST SET id = :new_id WHERE id = :old_id");
 
       upd.bind(":new_id", id+i);
       upd.bind(":old_id", id+i+1);
@@ -126,7 +248,7 @@ bool UserList::DeleteUser(int id)
     }
 
     // reset autoincrement base value
-    db.exec("UPDATE SQLITE_SEQUENCE SET seq = 0 WHERE NAME = 'USERS_LIST'");
+    m_db.exec("UPDATE SQLITE_SEQUENCE SET seq = 0 WHERE NAME = 'USERS_LIST'");
   }
   catch (exception& e)
   {

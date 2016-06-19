@@ -14,61 +14,44 @@
 
 using namespace std;
 
-enum usrtype
+enum class UType : int
 {
   U_TYPE_NORMAL,     // normal user
   U_TYPE_CALLER,     // user that sends summarized info
   U_TYPE_MAX
 };
 
-const string u_type[U_TYPE_MAX] = {"NORMAL", "CALLER"};
+const string u_type[static_cast< std::size_t >( UType::U_TYPE_MAX )] = {"NORMAL", "CALLER"};
 
 class User
 {
   public:
-    User(SQLite::Database& Db_link, string f_n, string l_n);
-    User(SQLite::Database& Db_link, string initials);
-    User(SQLite::Database& Db_link, int id);
-    ~User();
+    User() :  m_id{0},
+              m_fname{"---"},
+              m_lname{"---"},
+              m_initials{"--"},
+              m_type{UType::U_TYPE_NORMAL}
+    {}
 
-    string GetFName()
-    {
-      return this->f_name;
-    }
+    string  FName()   { return m_fname; }
+    string  LName()   { return m_lname; }
+    string  Initials(){ return m_initials; }
+    int     Id()      { return m_id; }
+    UType   Type()    { return m_type; }
+    string  TypeStr() { return u_type[static_cast <std::size_t>( m_type )]; }
 
-    string GetLName()
-    {
-      return this->l_name;
-    }
-
-    string GetInitials()
-    {
-      return this->initials;
-    }
-
-    int GetId()
-    {
-      return this->id;
-    }
-
-    usrtype GetTypeInt()
-    {
-      return this->type;
-    }
-
-    string GetTypeString()
-    {
-      return u_type[this->type];
-    }
+    void FName    ( string fname )    { m_fname = fname; }
+    void LName    ( string lname)     { m_lname = lname; }
+    void Initials ( string initials ) { m_initials = initials; }
+    void Id       ( int id )          { m_id = id; }
+    void Type     ( UType type )      { m_type = type; }
 
   private:
-    string  f_name;
-    string  l_name;
-    string  initials;
-    usrtype type;
-    int id;
-
-    SQLite::Database& db;    ///< Database connection
+    int     m_id;
+    string  m_fname;
+    string  m_lname;
+    string  m_initials;
+    UType   m_type;
 };
 
 #endif /* USER_H_ */

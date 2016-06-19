@@ -28,5 +28,6 @@
 	"r_modify_order": {"lunchprot" : "0.1", "result": {"MENU_ITEM": null, "PRICE": null, "U_INITIALS": null, "O_ID": null, "DATE": null}, "id": null},
 	
 	"e_32601": 		  {"lunchprot" : "0.1", "error": {"code": -32601, "message": "Method not found"}, "id": null},
-	"e_32700": 		  {"lunchprot" : "0.1", "error": {"code": -32700, "message": "Parse error"}, "id": null}
+	"e_32700": 		  {"lunchprot" : "0.1", "error": {"code": -32700, "message": "Parse error"}, "id": null},
+	"e_32500": 		  {"lunchprot" : "0.1", "error": {"code": -32500, "message": "No such user"}, "id": null}
 }
