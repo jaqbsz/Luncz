@@ -13,10 +13,7 @@ class LRpc
   public:
     explicit LRpc(const char * file_name);
 
-    QJsonObject getRpcObj()
-    {
-      return this->rpcObj;
-    }
+    QJsonObject getRpcObj() { return m_rpcObj; }
 
     QJsonObject getErrorObj   (const char * err_name);
     QJsonObject getResultObj  (const QString &res_name);
@@ -26,7 +23,7 @@ class LRpc
     QJsonValue  getParams     (const QJsonObject & frameObj);
 
   private:
-    QJsonObject rpcObj;
+    QJsonObject m_rpcObj;
 
 };
 

@@ -27,7 +27,7 @@ SOURCES += \
     src/Worker.cpp \
     src/Lrpc.cpp \
     src/LRpcMethod.cpp \
-    src/LRpcResult.cpp
+    src/LRpcResult.cpp \
 
 HEADERS += \
     src/SQLite/sqlite3.h \
@@ -49,4 +49,18 @@ HEADERS += \
     src/Worker.h \
     src/Lrpc.h \
     src/LRpcMethod.h \
-    src/LRpcResult.h
+    src/LRpcResult.h \
+
+
+test{
+    message(Test build)
+    QT += testlib
+    TARGET = UnitTests
+    SOURCES -= src/main.cpp
+
+    HEADERS += test/t_lrpc.h
+    SOURCES += test/main.cpp \
+               test/t_lrpc.cpp
+} else{
+    message(Normal build)
+}

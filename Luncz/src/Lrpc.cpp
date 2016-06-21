@@ -19,7 +19,7 @@ LRpc::LRpc(const char *file_name)
   file.close();
 
   QJsonDocument jsonDoc = QJsonDocument::fromJson(file_data);
-  this->rpcObj = jsonDoc.object();
+  m_rpcObj = jsonDoc.object();
 }
 
 //**************************************************************************************
@@ -28,7 +28,7 @@ LRpc::LRpc(const char *file_name)
 //**************************************************************************************
 QJsonObject LRpc::getErrorObj(const char *err_name)
 {
-  QJsonObject::const_iterator i_error = this->rpcObj.find(err_name);
+  QJsonObject::const_iterator i_error = m_rpcObj.find(err_name);
   return i_error.value().toObject();
 }
 
@@ -42,12 +42,12 @@ QJsonObject LRpc::getResultObj(const QString & res_name)
 
   QJsonObject result;
 
-  QJsonObject::const_iterator i_method = this->rpcObj.find(res_name);
+  QJsonObject::const_iterator i_method = m_rpcObj.find(res_name);
 
-  if (i_method == this->rpcObj.end())
+  if (i_method == m_rpcObj.end())
   {
     qDebug() << "getResultObj error e_32601";
-    result = this->getErrorObj("e_32601");
+    result = getErrorObj("e_32601");
   }
   else
   {
@@ -67,12 +67,12 @@ QJsonObject LRpc::getResultObj(const LRpcMethod &lrpcMeth)
 
   QJsonObject result;
 
-  QJsonObject::const_iterator i_method = this->rpcObj.find(lrpcMeth.respObj());
+  QJsonObject::const_iterator i_method = m_rpcObj.find(lrpcMeth.respObj());
 
-  if (i_method == this->rpcObj.end())
+  if (i_method == m_rpcObj.end())
   {
     qDebug() << "getResultObj error e_32601";
-    result = this->getErrorObj("e_32601");
+    result = getErrorObj("e_32601");
   }
   else
   {
@@ -90,9 +90,9 @@ QJsonValue LRpc::getResultValue(const QString & res_name)
 {
   //TODO throw exceptions
 
-  QJsonObject::const_iterator i_method = this->rpcObj.find(res_name);
+  QJsonObject::const_iterator i_method = m_rpcObj.find(res_name);
 
-  if (i_method == this->rpcObj.end())
+  if (i_method == m_rpcObj.end())
   {
     qDebug() << "getResultValue OBJ parse error";
     throw "parse error";
